@@ -1,0 +1,20 @@
+tr {
+    padding: 15px;
+    
+    
+    
+}
+td{
+    width: 100px;
+    height: 100px;
+    border: dotted;
+    border-color: Azure;
+    background: LightSkyBlue;
+    text-align: left;
+    vertical-align: top;
+    border-collapse: collapse;
+}
+button{
+    background: Azure;
+    
+}
