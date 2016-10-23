@@ -1,3 +1,4 @@
+/*much help from w3 css schools*/
 tr {
     padding: 15px;
     
@@ -16,5 +17,14 @@ td{
 }
 button{
     background: Azure;
-    
+    padding: 10px 24px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+button:hover {
+    background-color: White; /* Green */
+    padding: 10px 24px;
+    border-radius: 12px;
+    display: inline-block;
 }
