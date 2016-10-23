@@ -14,8 +14,12 @@
    
 </script>
         <script>
+            //add event dialogue
              function addEvent(){
                 $("#addEvent").dialog();
+            }
+            function viewEvents(){
+                $("#viewEvents").dialog();
             }
             //cheacking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
@@ -147,7 +151,7 @@
                     if(Calendar.getDay() === 0){
                         cal += '<tr>';
                     }
-                        cal += '<td id=date>' + Calendar.getDate() + '</td>';
+                        cal += '<td id="date">' + Calendar.getDate() + '</td>';
                     if(Calendar.getDay() ==7){
                         //end row on saturday
                         cal += '</tr>';
@@ -161,10 +165,12 @@
         </script>
     </head>
     <body>
+        <!--buttons to move between months-->
          <button id="prevMonth">Previous Month</button>
         <button id="nextMonth">Next Month</button>
-        <p id="calSpot">  
-        </p>
+         <button id="eventAdder">Add Event</button>
+        <!--where the calendar will print out-->
+        <p id="calSpot"> </p>
         <div id="addEvent" title="Event Add">
             <form name="addEvent" action="event_add.php" method="post">
                 <label for="date">Date</label>
@@ -175,24 +181,49 @@
                 <input type="text" id="eventTitle" name="eventTitle">
             </form>
         </div>
-        <button id="eventAdder">Add Event</button>
+        <div id="viewEvents" title="Events">
+            View the events on this day
+                <?php
+                session_start();
+                //display events on the date selected
+                require 'database.php';
+                $get_events = $mysqli->prepare("select time, event_text from events where date=?, username=?");
+                if(!$get_events){
+                    printf("Query Prep Failed: %s\n", $mysqli->error);
+                    exit;
+                }
+                $get_events->bind_param('is', $date, $user);
+                $get_events->execute();
+                $get_events->bind_result($time, $event);
+                 
+                while($get_events->fetch()){
+					//nonusers can only see comments from other users
+                        printf(" %s %u",
+                        "Event title: ".htmlspecialchars($event),
+                        "Event time: ".htmlspecialchars($time)
+                    );
+                } 
+                $get_events->close();
+                ?>
+                
+        </div>
+       
         <script>
-            
+            function start() {
+                firstCalendar();
+                document.getElementById("eventAdder").addEventListener("click", addEvent, false);
+                document.getElementById("date").addEventListener("click", viewEvents, false);
+              }
+              window.onload = start;
              //document.addEventListener("DOMContentLoaded", printCalendar, false);
-            window.onload = firstCalendar ;
             var adv = new Date();
             var advMonth = adv.getMonth(); //put this somewhere it gets set once then can change at will
             var advYear = adv.getFullYear();
             if(advMonth!= -1){
                 document.getElementById("prevMonth").addEventListener("click", prevMonth, false);
                 document.getElementById("nextMonth").addEventListener("click", nextMonth, false);
-                document.getElementById("eventAdder").addEventListener("click", addEvent, false);
-                //document.getElementById("date").addEventListener("click", viewEvents, false);
             }
             
         </script>
-       
-        
-        
     </body>
 </html>
