@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <!-- this script got from www.htmlbestcodes.com-Coded by: Krishna Eydat -->
 <html>
 <head>
