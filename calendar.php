@@ -5,7 +5,18 @@
             Calendar
         </title>
         <link rel="stylesheet" type="text/css" href="calendar.css" />
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">//load jquery to the page</script>
+        <!--jquery ui for forms-->
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js">
+    //forms go here
+   
+</script>
         <script>
+             function addEvent(){
+                $("#addEvent").dialog();
+            }
             //cheacking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
                 var leapYear ;
@@ -61,9 +72,7 @@
                 
             }
             
-            function addEvent(){
-                
-            }
+            
             
             //load other months
             function displayCalendar(mo, year){
@@ -93,7 +102,7 @@
                     if(Calendar.getDay() === 0){
                         cal += '<tr>';
                     }
-                    cal += '<td>' + Calendar.getDate() + '</td>';
+                    cal += '<td id="date">' + Calendar.getDate() + '</td>';
                     if(Calendar.getDay() ==7){
                         //end row on saturday
                         cal += '</tr>';
@@ -138,7 +147,7 @@
                     if(Calendar.getDay() === 0){
                         cal += '<tr>';
                     }
-                        cal += '<td id=date>' + Calendar.getDate() + '<div id=eventAdder>+ Event</div></td>';
+                        cal += '<td id=date>' + Calendar.getDate() + '</td>';
                     if(Calendar.getDay() ==7){
                         //end row on saturday
                         cal += '</tr>';
@@ -154,6 +163,19 @@
     <body>
          <button id="prevMonth">Previous Month</button>
         <button id="nextMonth">Next Month</button>
+        <p id="calSpot">  
+        </p>
+        <div id="addEvent" title="Event Add">
+            <form name="addEvent" action="event_add.php" method="post">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date">
+                <label for="time">Time</label>
+                <input type="time" id="time" name="time">
+                <label for="eventTitle">Event Title</label>
+                <input type="text" id="eventTitle" name="eventTitle">
+            </form>
+        </div>
+        <button id="eventAdder">Add Event</button>
         <script>
             
              //document.addEventListener("DOMContentLoaded", printCalendar, false);
@@ -161,17 +183,16 @@
             var adv = new Date();
             var advMonth = adv.getMonth(); //put this somewhere it gets set once then can change at will
             var advYear = adv.getFullYear();
-            if(advMonth != -1){
+            if(advMonth!= -1){
                 document.getElementById("prevMonth").addEventListener("click", prevMonth, false);
                 document.getElementById("nextMonth").addEventListener("click", nextMonth, false);
-                document.getElementById("date").addEventListener("click", addEvent, false);
+                document.getElementById("eventAdder").addEventListener("click", addEvent, false);
+                //document.getElementById("date").addEventListener("click", viewEvents, false);
             }
             
         </script>
        
         
-        <p id="calSpot">
-            
-        </p>
+        
     </body>
 </html>
