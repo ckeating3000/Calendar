@@ -6,8 +6,36 @@
         </title>
         <link rel="stylesheet" type="text/css" href="calendar.css" />
         <script>
-            function setAdvancers(){
-                var adv = new Date();  
+            //cheacking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
+            function isLeapYear (year){
+                var leapYear ;
+                if (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0))){
+                    leapYear=true;
+                }
+                else {
+                    leapYear =false;
+                }
+                return leapYear;
+            }
+            function daysInMonth(){
+                var numDays = ;
+                //even months have 31 days
+                if(month % 2 === 0){
+                    numDays = 31;
+                }
+                if( month == 1 && isLeapYear = false){
+                    numDays = 28;
+                }
+                if( month == 1 && isLeapYear = true){
+                    numDays = 29;
+                }
+                else{
+                    numDays = 30;
+                }
+                return numDays;
+            }
+            //trying to be able to move between months infinitely
+            function setAdvancers(){ 
                 var advMonth = adv.getMonth(); //put this somewhere it gets set once then can change at will
                 var advYear = adv.getFullYear();
             }
@@ -42,7 +70,7 @@
             var Calendar = new Date();   
             var month = mo;    // Returns month (0-11)
             var dateCurr = Calendar.getDate();    // Returns day (1-31)
-            var daysInMonth = 31;    // make variable
+            var daysInMonth = daysInMonth();    // make variable
             var cal = '';    // where calendar table will be stored
             
             Calendar.setDate(1);    // Start the calendar day at '1'
@@ -141,7 +169,7 @@
             
             cal+= '</table>';
             document.getElementById("calSpot").innerHTML = cal;
-           setAdvancers();
+           
             }
         </script>
     </head>
@@ -150,8 +178,10 @@
             
              //document.addEventListener("DOMContentLoaded", printCalendar, false);
             window.onload = firstCalendar ;
-            
-            if(adv){
+            var adv = new Date();
+            var advMonth = -1; //put this somewhere it gets set once then can change at will
+            var advYear = -1;
+            if(advMonth != -1){
                 document.getElementById("prevMonth").addEventListener("click", prevMonth, false);
                 document.getElementById("nextMonth").addEventListener("click", nextMonth, false);
             }
