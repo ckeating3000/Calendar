@@ -28,3 +28,7 @@ button:hover {
     border-radius: 12px;
     display: inline-block;
 }
+div#eventAdder {
+    text-align: center;
+    vertical-align: baseline;
+}
