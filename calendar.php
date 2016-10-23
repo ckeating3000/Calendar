@@ -9,13 +9,13 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">//load jquery to the page</script>
         <!--jquery ui for forms-->
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js">
-    //forms go here
-   
-</script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js">
+            //forms go here
+        </script>
+
         <script>
             //add event dialogue
-             function addEvent(){
+            function addEvent(){
                 $("#addEvent").dialog();
             }
             function viewEvents(){
@@ -34,18 +34,19 @@
             }
             function monthDays(month, year) {
                 var numDays ;
-                //even months have 31 days
-                if(month % 2 !== 0){
-                    numDays = 30;
+                
+                //      April        june          September    November
+                if(month===3 || month===5 || month===8 || month===10){
+                    numDays=30;
                 }
-                if( month == 1 && !isLeapYear(year)){
-                    numDays = 28;
+                if( month===1 && !isLeapYear(year)){
+                    numDays=28;
                 }
-                if( month == 1 && isLeapYear(year)){
-                    numDays = 29;
+                if( month===1 && isLeapYear(year)){
+                    numDays=29;
                 }
                 else{
-                    numDays = 31;
+                    numDays=31;
                 }
                 return numDays;
             }
@@ -76,113 +77,127 @@
                 
             }
             
-            
-            
             //load other months
             function displayCalendar(mo, year){
-            var weekDays = new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
-            var months = new Array('January','February','March','April','May','June','July','August','September','October','November','December');
-            //obtain the current date/year to start there
-            var Calendar = new Date();   
-            var month = mo;    // Returns month (0-11)
-            var daysInMonth = monthDays(month, year);    // call function
-            var cal = '';    // where calendar table will be stored
-            Calendar.setDate(1);    // Start the calendar day at '1'
-            Calendar.setMonth(month);    // Start the calendar month at now
-            Calendar.setFullYear(year);
-            cal += '<h1>' + months[month] + ' ' + year +'<h1>';
-            cal += '<table><tr>';
-            for(var i= 0; i< 7; i++){
-                cal += '<th>' +weekDays[i] +'</th>';
-            }
-            cal += '</tr>';
-            //make gaps until the first day of the month
-            for(var j=0; j< Calendar.getDay(); j++){
-                cal += '<td>  </td>';
-            }
-            //put days in the calendar
-            for(var k=0; k< daysInMonth; k++){
+                var weekDays = new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
+                var months = new Array('January','February','March','April','May','June','July','August','September','October','November','December');
+
+                //obtain the current date/year to start there
+                var Calendar = new Date();   
+                var month = mo;    // Returns month (0-11)
+                var daysInMonth = monthDays(month, year);    // call function
+                var cal = '';    // where calendar table will be stored
+                Calendar.setDate(1);    // Start the calendar day at '1'
+                Calendar.setMonth(month);    // Start the calendar month at now
+                Calendar.setFullYear(year);
+                //set header to current month
+                cal += '<h1>' + months[month] + ' ' + year +'<h1>';
+                //make table to display days of month
+                cal += '<table><tr>';
+                for(var i= 0; i< 7; i++){
+                    cal += '<th>' +weekDays[i] +'</th>';
+                }
+                cal += '</tr>';
+                //make gaps until the first day of the month
+                for(var j=0; j< Calendar.getDay(); j++){
+                    cal += '<td>  </td>';
+                }
+                //put days in the calendar
+                for(var k=0; k< daysInMonth; k++){
                     //at sunday, start a new row
-                    if(Calendar.getDay() === 0){
+                    if(Calendar.getDay()===0){
                         cal += '<tr>';
                     }
                     cal += '<td id="date">' + Calendar.getDate() + '</td>';
-                    if(Calendar.getDay() ==7){
+                    if(Calendar.getDay()===7){
                         //end row on saturday
                         cal += '</tr>';
                     }
                     //go through all the days in the month
-                Calendar.setDate(k+2);
-            }
-            
-            cal+= '</table>';
-            document.getElementById("calSpot").innerHTML = cal;
-            document.getElementById("date").addEventListener("click", viewEvents, false);
+                    Calendar.setDate(k+2);
+                }
+                
+                cal+= '</table>';
+                document.getElementById("calSpot").innerHTML = cal;
+                document.getElementById("date").addEventListener("click", viewEvents, false);
             }
             
             //first load
             function firstCalendar(){
 
-            var weekDays = new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
-            var months = new Array('January','February','March','April','May','June','July','August','September','October','November','December');
-            //obtain the current date/year to start there
-            var Calendar = new Date();   
-            var month = Calendar.getMonth();    // Returns month (0-11)
-            var year = Calendar.getFullYear();
-            var daysInMonth = monthDays(month, year);    // make variable
-            var cal = '';    // where calendar table will be stored
-            
-            Calendar.setDate(1);    // Start the calendar day at '1'
-            Calendar.setMonth(month);    // Start the calendar month at now
-            Calendar.setFullYear(year);
-            
-            cal += '<h1>' + months[month] + ' ' + year +'<h1>';
-            cal += '<table><tr>';
-            for(var i= 0; i< 7; i++){
-                cal += '<th>' +weekDays[i] +'</th>';
-            }
-            cal += '</tr>';
-            //make gaps until the first day of the month
-            for(var j=0; j< Calendar.getDay(); j++){
-                cal += '<td>  </td>';
-            }
-            //put days in the calendar
-            for(var k=0; k< daysInMonth; k++){
+                var weekDays = new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
+                var months = new Array('January','February','March','April','May','June','July','August','September','October','November','December');
+                //obtain the current date/year to start there
+                var Calendar = new Date();   
+                var month = Calendar.getMonth();    // Returns month (0-11)
+                var year = Calendar.getFullYear();
+                var daysInMonth = monthDays(month, year);    // make variable
+                var cal = '';    // where calendar table will be stored
+                
+                Calendar.setDate(1);    // Start the calendar day at '1'
+                Calendar.setMonth(month);    // Start the calendar month at now
+                Calendar.setFullYear(year);
+                
+                cal += '<h1>' + months[month] + ' ' + year +'<h1>';
+                cal += '<table><tr>';
+                for(var i= 0; i< 7; i++){
+                    cal += '<th>' +weekDays[i] +'</th>';
+                }
+                cal += '</tr>';
+                //make gaps until the first day of the month
+                for(var j=0; j< Calendar.getDay(); j++){
+                    cal += '<td>  </td>';
+                }
+                //put days in the calendar
+                for(var k=0; k< daysInMonth; k++){
                     //at sunday, start a new row
-                    if(Calendar.getDay() === 0){
+                    if(Calendar.getDay()===0){
                         cal += '<tr>';
                     }
                         cal += '<td id="date">' + Calendar.getDate() + '</td>';
-                    if(Calendar.getDay() ==7){
+                    if(Calendar.getDay()===7){
                         //end row on saturday
                         cal += '</tr>';
                     }
                     //go through all the days in the month  
-                Calendar.setDate(k+2);
-            }
-            cal+= '</table>';
-            document.getElementById("calSpot").innerHTML = cal;
-            document.getElementById("date").addEventListener("click", viewEvents, false);
+                    Calendar.setDate(k+2);
+                }
+                cal+= '</table>';
+                document.getElementById("calSpot").innerHTML = cal;
+                document.getElementById("date").addEventListener("click", viewEvents, false);
             }
         </script>
     </head>
     <body>
         <!--buttons to move between months-->
-         <button id="prevMonth">Previous Month</button>
+        <button id="prevMonth">Previous Month</button>
         <button id="nextMonth">Next Month</button>
-         <button id="eventAdder">Add Event</button>
+        <button id="eventAdder">Add Event</button>
         <!--where the calendar will print out-->
         <p id="calSpot"> </p>
         <div id="addEvent" title="Event Add">
             <form name="addEvent" action="event_add.php" method="post">
                 <label for="date">Date</label>
-                <input type="date" id="date" name="date">
+                <input type="date" id="date" name="date"/> <br>
                 <label for="time">Time</label>
-                <input type="time" id="time" name="time">
+                <input type="time" id="time" name="time"/> <br>
                 <label for="eventTitle">Event Title</label>
-                <input type="text" id="eventTitle" name="eventTitle">
+                <input type="text" id="eventTitle" name="eventTitle"/> <br>
+                <input type=submit name="Submit" value="Submit" id="Submit"/>
             </form>
         </div>
+        <div id="addUser" title="addUser">
+        Register in order to add and view events
+            <form name="add_new_user" action="add_new_user.php" method="POST">
+                <!--form stores information about username and password-->
+                <p>
+                New Username: <input type="text" name="newname">
+                New Password: <input type="password" name="newpass">
+                <input type="submit" value="Join our site" />
+                </p>
+            </form>
+        </div>
+
         <div id="viewEvents" title="Events">
             View the events on this day
                 <?php
@@ -209,15 +224,15 @@
                 ?>
                 
         </div>
-       
+        
         <script>
             function start() {
                 firstCalendar();
                 document.getElementById("eventAdder").addEventListener("click", addEvent, false);
 
-              }
-              window.onload = start;
-             //document.addEventListener("DOMContentLoaded", printCalendar, false);
+            }
+            window.onload = start;
+            //document.addEventListener("DOMContentLoaded", printCalendar, false);
             var adv = new Date();
             var advMonth = adv.getMonth(); //put this somewhere it gets set once then can change at will
             var advYear = adv.getFullYear();

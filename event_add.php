@@ -1,11 +1,46 @@
 <?php
-require 'database.php';
+	require 'database.php';
+	if(isset($_POST["eventTitle"])&&isset($_POST["time"])&&isset($_POST["date"])){
+		$user = "Bob"; // * change once we have logging in functionality
+		//start session
+		//$user = SESSION_["login"];
 
+		$event = $_POST["eventTitle"];
+		$time = $_POST["time"];
+		$date = $_POST["date"];
+		//check that date and time are properly formatted. Proper format automatic when inputting values using Chrome
+		// from http://stackoverflow.com/questions/13194322/php-regex-to-check-date-is-in-yyyy-mm-dd-format
+		$proper_date = False;
+		if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$date)){
+        	$proper_date=True;
+    	}
+    	else{
+        	$proper_date=False;
+    	}
+    	$proper_time = False;
+		if (preg_match("/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/",$time)){
+        	$proper_time=True;
+    	}
+    	else{
+        	$proper_time=False;
+    	}
 
-$user = "Bob";
-$event = $_POST["eventTitle"];
-$time = $_POST["time"];
-$date = $_POST["date"];
-$addevent = $mysqli->prepare("insert into events (username, event_text, date, time) values (?, ?, ?, ?)");
-$addevent->bind_param('ssii', $user, $event, $time, $date );
+    	// proceed with inserting event if time and date are validated
+    	if($proper_time&&$proper_date){
+			$addevent = $mysqli->prepare("insert into events (username, event_text, date, time) values (?, ?, ?, ?)");
+			if(!$addevent){
+				printf("Query Prep Failed: %s\n", $mysqli->error);
+				exit;
+			}
+			$addevent->bind_param('ssss', $user, $event, $date, $time);
+			$addevent->execute();
+			$addevent->close();
+			header("Location: calendar.php");
+			exit;
+		}
+		else{ // else get out of here!
+			header("Location: calendar.php");
+			exit;
+		}
+	}
 ?>
