@@ -29,7 +29,65 @@
              function loginUser(){
                 $("#loggerIn").dialog();
             }
-        
+
+            function register(){
+                    //adapted from https://www.formget.com/jquery-registration-form/
+                
+                    $("#register").click(function() {
+                        
+                        
+                        $.ajax({
+                            type: "POST",
+                            url: "add_new_user.php",
+                            datatype: "html",
+                            data: dataString,
+                            beforeSend: function(){
+                                var name = $("#userName").val();
+                                var password = $("#newPassword").val();
+                                if (name === '' || password === '') {
+                                    alert("you must fill in both fields");
+                                } 
+                                else if ((password.length) < 8) {
+                                    alert("Password should atleast 8 character in length");
+                                 } 
+                            }
+                            .done(function(data){
+                                if (data === 'You have registered') {
+                                    alert("nice job, you registered");
+                                    alert(data);
+                                    $("register")[0].reset();
+                                }
+                                else{
+                                    alert("you registered?");
+                                    alert(data);
+                                }
+                            });
+                        })
+                        // $.post("add_new_user.php", {
+                        //     newname: name,
+                        //     newpass: password
+                        // },
+                        // function(data) {
+                        //     if (data === 'You have registered') {
+                        //         alert("nice job, you registered");
+                        //         alert(data);
+                        //         $("register")[0].reset();
+                        //     }
+                        //     else{
+                        //         alert("you registered?");
+                        //         alert(data);
+                        //     }
+                        // });
+                        
+                    });
+                
+            }
+            // function register(){
+            //     var xmlHttp = new XMLHttpRequest();
+            //     xmlHttp.open("POST", add_new_user.php, true);
+            //     xmlHttp.addEventListener("load", register_callback, false);
+            //     xmlHttp.send();
+            // }
             
             //cheacking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
@@ -194,15 +252,15 @@
         
         <div id="addUser" title="Join Our Site">
             <p>Register to add and view events</p> 
-            <script type="text/javascript" src="register_user.js"></script>
-            <form name="add_new_user" action="#" method="POST">
+            <form name="register" id="register" action="#" method="POST">
                 <!--form stores information about username and password-->
                 <label for="userName">Username</label>
                 <input type="text" id="userName" name="newname"><br>
                 <label for="newPassword">Password</label>
                 <input type="password" id="newPassword" name="newpass">
-                <input type="button" name="register" id="register" value="Register">
+                <input type="button" name="Submit" id="register" value="submit">
             </form>
+
         </div>
 
         <div id="loggerIn" title="User Login">
@@ -227,7 +285,7 @@
                 <input type="time" id="time" name="time"/> <br>
                 <label for="eventTitle">Event Title</label>
                 <input type="text" id="eventTitle" name="eventTitle"/> <br>
-                <input type=submit name="Submit" value="Submit" id="Submit"/>
+                <input type=submit name="Submit" value="Submit" id="event_submit"/>
             </form>
         </div>
      
@@ -265,6 +323,7 @@
                 document.getElementById("eventAdder").addEventListener("click", addEvent, false);
                 document.getElementById("userAdder").addEventListener("click", addUser, false);
                 document.getElementById("login").addEventListener("click", loginUser, false);
+                register();
 
             }
             window.onload = start;

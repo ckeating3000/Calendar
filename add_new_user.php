@@ -42,7 +42,7 @@ else{
 	$adduser->bind_param('ss', $new_username, $password_crypted);
 	$adduser->execute();
 	$adduser->close();
-	echo "You just registered!"
+	echo "You have registered";
 }
 
 ?>

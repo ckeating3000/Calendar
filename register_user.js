@@ -15,10 +15,17 @@ $(document).ready(function() {
 				newpass: password
 			}, 
 			function(data) {
-				if (data == 'You have registered') {
+				if (data === 'You have registered') {
+					
 					$("form")[0].reset();
 				}
-				alert(data);
+				else if(data === 'username already exists')
+				{
+					alert("username already exists");
+				}
+				else{
+					alert(data);
+				}
 			});
 		}
 	});
