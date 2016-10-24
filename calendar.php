@@ -18,9 +18,17 @@
             function addEvent(){
                 $("#addEvent").dialog();
             }
+            function addUser(){
+                $("#addUser").dialog();
+            }
             function viewEvents(){
                 $("#viewEvents").dialog();
             }
+             function loginUser(){
+                $("#loggerIn").dialog();
+            }
+        
+            
             //cheacking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
                 var leapYear ;
@@ -113,13 +121,16 @@
                         //end row on saturday
                         cal += '</tr>';
                     }
+                    
                     //go through all the days in the month
                     Calendar.setDate(k+2);
                 }
-                
+                  //for(var h=Calendar.getDay(); h< 7; h++){
+                  //  cal += '<td>  </td>';
+                  //  }
                 cal+= '</table>';
                 document.getElementById("calSpot").innerHTML = cal;
-                document.getElementById("date").addEventListener("click", viewEvents, false);
+               $("td").click(viewEvents);
             }
             
             //first load
@@ -162,9 +173,12 @@
                     //go through all the days in the month  
                     Calendar.setDate(k+2);
                 }
+                //  for(var h=Calendar.getDay(); h< 7; h++){
+                //    cal += '<td>  </td>';
+                //}
                 cal+= '</table>';
                 document.getElementById("calSpot").innerHTML = cal;
-                document.getElementById("date").addEventListener("click", viewEvents, false);
+                $("td").click(viewEvents);
             }
         </script>
     </head>
@@ -173,6 +187,33 @@
         <button id="prevMonth">Previous Month</button>
         <button id="nextMonth">Next Month</button>
         <button id="eventAdder">Add Event</button>
+         <button id="login">Login</button>
+        <button id="userAdder">Register</button>
+        
+           <div id="addUser" title="Join Our Site">
+       <p>Register to add and view events</p> 
+            <form name="add_new_user"  action="add_new_user.php" method="POST">
+                <!--form stores information about username and password-->
+                <label for="userName">Username</label>
+                 <input type="text" id="userName" name="newname"><br>
+                 <label for="newPassword">Password</label>
+               <input type="password" id="newPassword" name="newpass">
+                <input type="submit" value="Join our site" />
+                
+            </form>
+        </div>
+           <div id="loggerIn" title="User Login">
+       <p>Login to add and view your events</p> 
+            <form name="add_new_user"  action="login.php" method="POST">
+                <!--form stores information about username and password-->
+                <label for="userName">Username</label>
+                 <input type="text" id="username" name="newname"><br>
+                 <label for="newPassword">Password</label>
+               <input type="password" id="password" name="newpass">
+                <input type="submit" value="Login" />
+                
+            </form>
+        </div>
         <!--where the calendar will print out-->
         <p id="calSpot"> </p>
         <div id="addEvent" title="Event Add">
@@ -186,17 +227,7 @@
                 <input type=submit name="Submit" value="Submit" id="Submit"/>
             </form>
         </div>
-        <div id="addUser" title="addUser">
-        Register in order to add and view events
-            <form name="add_new_user" action="add_new_user.php" method="POST">
-                <!--form stores information about username and password-->
-                <p>
-                New Username: <input type="text" name="newname">
-                New Password: <input type="password" name="newpass">
-                <input type="submit" value="Join our site" />
-                </p>
-            </form>
-        </div>
+     
 
         <div id="viewEvents" title="Events">
             View the events on this day
@@ -229,10 +260,12 @@
             function start() {
                 firstCalendar();
                 document.getElementById("eventAdder").addEventListener("click", addEvent, false);
+                document.getElementById("userAdder").addEventListener("click", addUser, false);
+                document.getElementById("login").addEventListener("click", loginUser, false);
 
             }
             window.onload = start;
-            //document.addEventListener("DOMContentLoaded", printCalendar, false);
+            
             var adv = new Date();
             var advMonth = adv.getMonth(); //put this somewhere it gets set once then can change at will
             var advYear = adv.getFullYear();

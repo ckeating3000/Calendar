@@ -45,8 +45,4 @@ else{
 	exit;
 }
 
-else{
-	echo "Username and password already taken";
-} 
-
 ?>

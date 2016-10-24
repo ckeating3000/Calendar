@@ -34,3 +34,9 @@ button:hover {
 #viewEvents {
     display:none
 }
+#addUser {
+    display: none
+}
+#loggerIn {
+    display: none
+}
