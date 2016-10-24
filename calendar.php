@@ -30,64 +30,32 @@
                 $("#loggerIn").dialog();
             }
 
-            function register(){
                     //adapted from https://www.formget.com/jquery-registration-form/
-                
-                    $("#register").click(function() {
-                        
-                        
-                        $.ajax({
-                            type: "POST",
-                            url: "add_new_user.php",
-                            datatype: "html",
-                            data: dataString,
-                            beforeSend: function(){
-                                var name = $("#userName").val();
-                                var password = $("#newPassword").val();
-                                if (name === '' || password === '') {
-                                    alert("you must fill in both fields");
-                                } 
-                                else if ((password.length) < 8) {
-                                    alert("Password should atleast 8 character in length");
-                                 } 
-                            }
-                            .done(function(data){
-                                if (data === 'You have registered') {
-                                    alert("nice job, you registered");
-                                    alert(data);
-                                    $("register")[0].reset();
-                                }
-                                else{
-                                    alert("you registered?");
-                                    alert(data);
-                                }
-                            });
-                        })
-                        // $.post("add_new_user.php", {
-                        //     newname: name,
-                        //     newpass: password
-                        // },
-                        // function(data) {
-                        //     if (data === 'You have registered') {
-                        //         alert("nice job, you registered");
-                        //         alert(data);
-                        //         $("register")[0].reset();
-                        //     }
-                        //     else{
-                        //         alert("you registered?");
-                        //         alert(data);
-                        //     }
-                        // });
-                        
-                    });
-                
-            }
-            // function register(){
-            //     var xmlHttp = new XMLHttpRequest();
-            //     xmlHttp.open("POST", add_new_user.php, true);
-            //     xmlHttp.addEventListener("load", register_callback, false);
-            //     xmlHttp.send();
-            // }
+            function register() {
+            var data = $("#register").serialize();
+            $.ajax({
+                type : 'POST',
+                url  : 'add_new_user.php',
+                data : data,
+                beforeSend: function(){
+                    var name = $("#userName").val();
+                   var password = $("#newPassword").val();
+                   if (name === '' || password === '') {
+                       alert("you must fill in both fields");
+                   } 
+                   else if ((password.length) < 8) {
+                       alert("Password should atleast 8 character in length");
+                    } 
+                },
+                success :  function(data) {
+                     
+                        if (data === 'You have registered') {
+                            $("form")[0].reset();
+                        }
+                }
+            });
+        }
+
             
             //cheacking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
@@ -252,13 +220,13 @@
         
         <div id="addUser" title="Join Our Site">
             <p>Register to add and view events</p> 
-            <form name="register" id="register" action="#" method="POST">
+            <form class="form" name="register" id="register" action="#" method="POST">
                 <!--form stores information about username and password-->
                 <label for="userName">Username</label>
                 <input type="text" id="userName" name="newname"><br>
                 <label for="newPassword">Password</label>
                 <input type="password" id="newPassword" name="newpass">
-                <input type="button" name="Submit" id="register" value="submit">
+                <input type="button" name="Submit" id="registerSub" value="submit">
             </form>
 
         </div>
@@ -323,7 +291,7 @@
                 document.getElementById("eventAdder").addEventListener("click", addEvent, false);
                 document.getElementById("userAdder").addEventListener("click", addUser, false);
                 document.getElementById("login").addEventListener("click", loginUser, false);
-                register();
+                $("#registerSub").click(register);
 
             }
             window.onload = start;
