@@ -1,12 +1,14 @@
-<!-- this script inspired by www.htmlbestcodes.com-Coded by: Krishna Eydat -->
+
+<!DOCTYPE HTML>
 <html>
+    <!-- this script inspired by www.htmlbestcodes.com-Coded by: Krishna Eydat -->
     <head>
         <title>
             Calendar
         </title>
         <link rel="stylesheet" type="text/css" href="calendar.css" />
-        
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">//load jquery to the page</script>
+ <!--       load jquery to the page-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <!--jquery ui for forms-->
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js">
@@ -218,6 +220,7 @@
         <p id="calSpot"> </p>
         <div id="addEvent" title="Event Add">
             <form name="addEvent" action="event_add.php" method="post">
+                <!--date and time fields may not always be supported, consider one of these options or may want to figure out our own fields-->
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date"/> <br>
                 <label for="time">Time</label>

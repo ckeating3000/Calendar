@@ -40,3 +40,9 @@ button:hover {
 #loggerIn {
     display: none
 }
+th{
+    font-size: 20px
+}
+td{
+    font-size: 20px
+}
