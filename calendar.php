@@ -194,7 +194,7 @@
         
         <div id="addUser" title="Join Our Site">
             <p>Register to add and view events</p> 
-            <script type="text/javascript" src="js/registration.js"></script>
+            <script type="text/javascript" src="register_user.js"></script>
             <form name="add_new_user" action="#" method="POST">
                 <!--form stores information about username and password-->
                 <label for="userName">Username</label>

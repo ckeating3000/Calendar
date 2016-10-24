@@ -22,11 +22,12 @@ $password_crypted = password_hash($new_password, PASSWORD_DEFAULT);
 //get the username from the database, make sure it doesn't already exist
 $check_u_p = $mysqli->prepare("select username from users where username like '$new_username' ");
 if(!$check_u_p){
-    printf("Query Prep Failed: %s\n", $mysqli->error);
+    printf("Query Prep 1 Failed: %s\n", $mysqli->error);
     exit;
 }
 $check_u_p->execute();
 $check_u_p->bind_result($username);
+$check_u_p->store_result();
 if ($username===$new_username) {
 	echo "username already exists";
 	exit;
@@ -35,14 +36,13 @@ else{
 	//add username and password to the database if it doesn't exist already
 	$adduser = $mysqli->prepare("insert into users (username, hash_key) values (?, ?)");
 	if(!$adduser){
-		printf("Query Prep Failed: %s\n", $mysqli->error);
+		printf("Query Prep 2 Failed: %s\n", $mysqli->error);
 		exit;
 	}
 	$adduser->bind_param('ss', $new_username, $password_crypted);
 	$adduser->execute();
 	$adduser->close();
-	header("Location: calendar.php");
-	exit;
+	echo "You just registered!"
 }
 
 ?>

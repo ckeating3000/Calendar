@@ -1,8 +1,8 @@
 //adapted from https://www.formget.com/jquery-registration-form/
 $(document).ready(function() {
 	$("#register").click(function() {
-		var name = $("#name").val();
-		var password = $("#password").val();
+		var name = $("#userName").val();
+		var password = $("#newPassword").val();
 		if (name === '' || password === '') {
 			alert("you must fill in both fields");
 		} 
