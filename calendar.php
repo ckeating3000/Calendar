@@ -187,31 +187,31 @@
         <button id="prevMonth">Previous Month</button>
         <button id="nextMonth">Next Month</button>
         <button id="eventAdder">Add Event</button>
-         <button id="login">Login</button>
+        <button id="login">Login</button>
         <button id="userAdder">Register</button>
         
-           <div id="addUser" title="Join Our Site">
-       <p>Register to add and view events</p> 
-            <form name="add_new_user"  action="add_new_user.php" method="POST">
+        <div id="addUser" title="Join Our Site">
+            <p>Register to add and view events</p> 
+            <script type="text/javascript" src="js/registration.js"></script>
+            <form name="add_new_user" action="#" method="POST">
                 <!--form stores information about username and password-->
                 <label for="userName">Username</label>
-                 <input type="text" id="userName" name="newname"><br>
-                 <label for="newPassword">Password</label>
-               <input type="password" id="newPassword" name="newpass">
-                <input type="submit" value="Join our site" />
-                
+                <input type="text" id="userName" name="newname"><br>
+                <label for="newPassword">Password</label>
+                <input type="password" id="newPassword" name="newpass">
+                <input type="button" name="register" id="register" value="Register">
             </form>
         </div>
-           <div id="loggerIn" title="User Login">
-       <p>Login to add and view your events</p> 
+
+        <div id="loggerIn" title="User Login">
+            <p>Login to add and view your events</p> 
             <form name="add_new_user"  action="login.php" method="POST">
                 <!--form stores information about username and password-->
                 <label for="userName">Username</label>
-                 <input type="text" id="username" name="newname"><br>
-                 <label for="newPassword">Password</label>
-               <input type="password" id="password" name="newpass">
+                <input type="text" id="username" name="newname"><br>
+                <label for="newPassword">Password</label>
+                <input type="password" id="password" name="newpass">
                 <input type="submit" value="Login" />
-                
             </form>
         </div>
         <!--where the calendar will print out-->

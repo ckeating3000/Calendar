@@ -20,7 +20,7 @@ if( !preg_match('/^[\w_\-]+$/', $new_password) ){
 $password_crypted = password_hash($new_password, PASSWORD_DEFAULT);
 
 //get the username from the database, make sure it doesn't already exist
-$check_u_p = $mysqli->prepare("select usernamefrom users where username like '$new_username' ");
+$check_u_p = $mysqli->prepare("select username from users where username like '$new_username' ");
 if(!$check_u_p){
     printf("Query Prep Failed: %s\n", $mysqli->error);
     exit;
