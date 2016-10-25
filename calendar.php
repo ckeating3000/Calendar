@@ -143,7 +143,7 @@
             //checking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
                 var leapYear ;
-                if ((year % 4 == 0 && year % 100 !== 0) || year % 400 == 0){
+                if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0){
                     leapYear=true;
                 }
                 else {
@@ -158,10 +158,10 @@
                 if(month==3 || month==5 || month==8 || month==10){
                     numDays=30;
                 }
-                if( month==1 && !isLeapYear(year)){
+                else if( month==1 && !isLeapYear(year)){
                     numDays=28;
                 }
-                if( month==1 && isLeapYear(year)){
+                else if( month==1 && isLeapYear(year)){
                     numDays=29;
                 }
                 else{
@@ -169,7 +169,7 @@
                 }
                 return numDays;
             }
-            //trying to be able to move between months infinitely
+            //move between months infinitely
 
             function prevMonth(){
                 if(advMonth > 0){
