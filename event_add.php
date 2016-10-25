@@ -26,20 +26,21 @@
     	}
 
     	// proceed with inserting event if time and date are validated
-    	if($proper_time&&$proper_date){
+    	if($proper_time && $proper_date){
 			$addevent = $mysqli->prepare("insert into events (username, event_text, date, time) values (?, ?, ?, ?)");
 			if(!$addevent){
 				printf("Query Prep Failed: %s\n", $mysqli->error);
+				echo "Content upload problem";
 				exit;
 			}
 			$addevent->bind_param('ssss', $user, $event, $date, $time);
 			$addevent->execute();
 			$addevent->close();
-			header("Location: calendar.php");
+			echo "Content successfully added";
 			exit;
 		}
 		else{ // else get out of here!
-			header("Location: calendar.php");
+			echo "Content upload failure";
 			exit;
 		}
 	}
