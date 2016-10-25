@@ -25,6 +25,7 @@
         <button id="eventAdder">Add Event</button>
         <button id="login">Login</button>
         <button id="userAdder">Register</button>
+         <div id="logout"></div>
         <!--where the calendar will print out-->
         <p id="calSpot"> </p>
         
@@ -43,12 +44,12 @@
 
         <div id="loggerIn" title="User Login">
             <p>Login to add and view your events</p> 
-            <form name="login"  id="login-form" action="login.php" method="POST">
+            <form name="login"  id="login-form" action="#" method="POST">
                 <!--form stores information about username and password-->
                 <label for="userName">Username</label>
-                <input type="text" id="username" name="newname"><br>
-                <label for="newPassword">Password</label>
-                <input type="password" id="password" name="newpass">
+                <input type="text" id="username" name="username"><br>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="userpass">
                 <input type="submit" value="Login" />
             </form>
         </div>
@@ -82,13 +83,26 @@
             function addUser(){
                 $("#addUser").dialog();
             }
-            function viewEvents(){
-                $("#viewEvents").dialog();
-            }
+            //function viewEvents(){
+            //    //php script called to get all events associated with user and date
+            //    var data
+            //    //reveal the dialogue with those events listed 
+            //    $("#viewEvents").dialog();
+            //}
             function loginUser(){
                 $("#loggerIn").dialog();
             }
-
+            function logout(){
+                $.ajax({
+                   'url' : "logout.php",
+                   'success' : function(data){
+                    console.log(data);
+                    alert(data);
+                    $("#logout").hide();
+                   }
+                });
+                return false;
+            }
             //adapted from https://www.formget.com/jquery-registration-form/
             //$("#register-submit").click(function(){
             //    console.log("line 35");
@@ -108,24 +122,47 @@
                          if (name === '' || password === '') {
                              alert("you must fill in both fields");
                          }
-                         else if ((password.length) < 8) {
-                             alert("Password should atleast 8 character in length");
-                         }
+                         //else if ((password.length) < 8) {
+                         //    alert("Password should be at least 8 character in length");
+                         //}
                      },
                      'success': function(data) {
                         console.log(data);
                         alert(data);
                          if (data == 'You have registered') {
-                            
                              $("#register")[0].reset(); // reset form
                              //document.getElementById("message").innerHTML="You successfully registered";
                          }
                      }
                  });
-                
+                return false;
             }
-            
-               
+            function userLogger(){
+                var data = $("#login-form").serialize();
+                $.ajax({
+                   'type' : "POST",
+                   'url'  : "login.php",
+                   'data' : data,
+                   'beforeSend' : function(){
+                        var name = $("#username").val();
+                        var password = $("#password").val();
+                         if (name === '' || password === '') {
+                             alert("you must fill in both fields");
+                         }
+                   },
+                   'success': function(data){
+                    console.log(data);
+                    alert(data);
+                    if(data == "Login successful"){
+                        var logoutButton = "<button id='logout-button'>Logout</button>";
+                        document.getElementById("logout").innerHTML = logoutButton;
+                         document.getElementById("logout-button").addEventListener("click", logout, false);
+                        
+                    }
+                   }
+                });
+               return false;
+            }
             function eventAdder(){
                 var data = $("#addEvent").serialize();
                 $.ajax({
@@ -305,6 +342,10 @@
                 $("#register").on("submit", function(event){
                     event.preventDefault();
                     userAdder();
+                });
+                $("#login-form").on("submit", function(event){
+                    event.preventDefault();
+                    userLogger();
                 });
                 //$("#registerSub").click(register);
             }

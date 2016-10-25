@@ -1,7 +1,7 @@
 <?php
 	require 'database.php';
-
-		$user = "Bob"; // * change once we have logging in functionality
+		session_start();
+		$user = $_SESSION["Login"]; // * change once we have logging in functionality
 		//start session
 		//$user = SESSION_["login"];
 
