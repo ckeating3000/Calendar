@@ -112,8 +112,9 @@
                              alert("Password should atleast 8 character in length");
                          }
                      },
-                     'complete': function(data) {
+                     'success': function(data) {
                         console.log(data);
+                        alert(data);
                          if (data == 'You have registered') {
                             
                              $("#register")[0].reset(); // reset form
@@ -131,7 +132,8 @@
                     'type': "POST",
                     'url': "event_add.php",
                     'data' : data,
-                    'complete': function(data){
+                    'success': function(data){
+                        alert(data);
                         console.log(data);
                     }
                 });
