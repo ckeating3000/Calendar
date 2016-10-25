@@ -25,7 +25,7 @@
         <button id="eventAdder">Add Event</button>
         <button id="login">Login</button>
         <button id="userAdder">Register</button>
-         <div id="logout"></div>
+         <button id="logoutbutton">Logout</button>
         <!--where the calendar will print out-->
         <p id="calSpot"> </p>
         
@@ -83,12 +83,15 @@
             function addUser(){
                 $("#addUser").dialog();
             }
-            //function viewEvents(){
-            //    //php script called to get all events associated with user and date
-            //    var data
-            //    //reveal the dialogue with those events listed 
-            //    $("#viewEvents").dialog();
-            //}
+            function viewEvents(month, year){
+                //php script called to get all events associated with user and date
+                var currentRow=$(this).closest("tr");
+                //based onhttp://codepedia.info/jquery-get-table-cell-td-value-div/
+                var date = currentRow.find("td").text();
+                alert(date);
+                //reveal the dialogue with those events listed 
+                //$("#viewEvents").dialog();
+            }
             function loginUser(){
                 $("#loggerIn").dialog();
             }
@@ -107,12 +110,6 @@
                 return false;
             }
             //adapted from https://www.formget.com/jquery-registration-form/
-            //$("#register-submit").click(function(){
-            //    console.log("line 35");
-            //    //var form_Data = new FormData();    
-            //    //form_Data.append('file',input.files[0]);
-
-            //    console.log(data);
             function userAdder(){
                 var data = $("#register").serialize();
                   $.ajax({
@@ -157,10 +154,9 @@
                      alert(data);
                     console.log(data);
                     if(data == "Login successful"){
-                        var logoutButton = "<button id='logout-button'>Logout</button>";
-                        document.getElementById("logout").innerHTML = logoutButton;
-                         document.getElementById("logout-button").addEventListener("click", logout, false);
+                        $("#logoutbutton").show();
                          //logged in users can add events and don't need the register button
+                         $("#login").hide();
                          $("#userAdder").hide();
                          $("#eventAdder").show();
                         
@@ -268,7 +264,7 @@
                     if(Calendar.getDay()===0){
                         cal += '<tr>';
                     }
-                    cal += '<td id="date">' + Calendar.getDate() + '</td>';
+                    cal += '<td><input type="number" class="date">' + Calendar.getDate() + '</td>';
                     if(Calendar.getDay()===7){
                         //end row on saturday
                         cal += '</tr>';
@@ -282,7 +278,6 @@
                   //  }
                 cal+= '</table>';
                 document.getElementById("calSpot").innerHTML = cal;
-               $("td").click(viewEvents);
             }
             
             //first load
@@ -302,7 +297,7 @@
                 Calendar.setFullYear(year);
                 
                 cal += '<h1>' + months[month] + ' ' + year +'<h1>';
-                cal += '<table><tr>';
+                cal += '<table id="calendar"><tr>';
                 for(var i= 0; i< 7; i++){
                     cal += '<th>' +weekDays[i] +'</th>';
                 }
@@ -317,7 +312,7 @@
                     if(Calendar.getDay()===0){
                         cal += '<tr>';
                     }
-                        cal += '<td id="date">' + Calendar.getDate() + '</td>';
+                        cal += '<td>' + Calendar.getDate() + '<button class="btnSelect">View Events</button></td>';
                     if(Calendar.getDay()===7){
                         //end row on saturday
                         cal += '</tr>';
@@ -330,16 +325,18 @@
                 //}
                 cal+= '</table>';
                 document.getElementById("calSpot").innerHTML = cal;
-                $("td").click(viewEvents);
+                $("#calendar").on('click', '.btnSelect', viewEvents(month, year));
             }
             //everything that loads upon page load
             function start() {
                 $("#eventAdder").hide();
+                $("#logoutbutton").hide();
                 firstCalendar();
                 //listeners for the add event, user and login buttons
                 document.getElementById("eventAdder").addEventListener("click", addEvent, false);
                 document.getElementById("userAdder").addEventListener("click", addUser, false);
                 document.getElementById("login").addEventListener("click", loginUser, false);
+                document.getElementById("logoutbutton").addEventListener("click", logout, false);
                 //jquery listeners for the add event and add user forms
                 $("#addEvent").on("submit", function(event){
                     event.preventDefault();
