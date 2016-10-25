@@ -15,7 +15,85 @@
             //forms go here
         </script>
 
+        
+    </head>
+    <body>
+        <!--buttons to move between months-->
+        <button id="prevMonth">Previous Month</button>
+        <button id="nextMonth">Next Month</button>
+        <button id="eventAdder">Add Event</button>
+        <button id="login">Login</button>
+        <button id="userAdder">Register</button>
+        
+        <div id="addUser" title="Join Our Site">
+            <p>Register to add and view events</p> 
+            <form class="form" id="register" action="" method="POST">
+                <!--form stores information about username and password-->
+                <div id="message"> </div>
+                <label for="userName">Username</label>
+                <input type="text" id="userName" name="newname"><br>
+                <label for="newPassword">Password</label>
+                <input type="password" id="newPassword" name="newpass">
+                <button id="register-submit">Register</button>
+            </form>
+        </div>
+
+        <div id="loggerIn" title="User Login">
+            <p>Login to add and view your events</p> 
+            <form name="add_new_user"  action="login.php" method="POST">
+                <!--form stores information about username and password-->
+                <label for="userName">Username</label>
+                <input type="text" id="username" name="newname"><br>
+                <label for="newPassword">Password</label>
+                <input type="password" id="password" name="newpass">
+                <input type="submit" value="Login" />
+            </form>
+        </div>
+
+        <!--where the calendar will print out-->
+        <p id="calSpot"> </p>
+        <div id="addEvent" title="Event Add">
+            <form name="addEvent" action="event_add.php" method="post">
+                <!--date and time fields may not always be supported, consider one of these options or may want to figure out our own fields-->
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date"/> <br>
+                <label for="time">Time</label>
+                <input type="time" id="time" name="time"/> <br>
+                <label for="eventTitle">Event Title</label>
+                <input type="text" id="eventTitle" name="eventTitle"/> <br>
+                <input type=submit name="Submit" value="Submit" id="event_submit"/>
+            </form>
+        </div>
+     
+
+        <div id="viewEvents" title="Events">
+            View the events on this day
+                <?php
+//                session_start();
+//                //display events on the date selected
+//                require 'database.php';
+//                $get_events = $mysqli->prepare("select time, event_text from events where date=?, username=?");
+//                if(!$get_events){
+//                    printf("Query Prep Failed: %s\n", $mysqli->error);
+//                    exit;
+//                }
+//                $get_events->bind_param('is', $date, $user);
+//                $get_events->execute();
+//                $get_events->bind_result($time, $event);
+//                 
+//                while($get_events->fetch()){
+//					//nonusers can only see comments from other users
+//                        printf(" %s %u",
+//                        "Event title: ".htmlspecialchars($event),
+//                        "Event time: ".htmlspecialchars($time)
+//                    );
+//                } 
+//                $get_events->close();
+                ?>    
+        </div>
+        
         <script>
+        //$('document').ready(function(){    
             //add event dialogue
             function addEvent(){
                 $("#addEvent").dialog();
@@ -26,41 +104,46 @@
             function viewEvents(){
                 $("#viewEvents").dialog();
             }
-             function loginUser(){
+            function loginUser(){
                 $("#loggerIn").dialog();
             }
 
-                    //adapted from https://www.formget.com/jquery-registration-form/
-            function register() {
-            var data = $("#register").serialize();
-            $.ajax({
-                type : 'POST',
-                url  : 'add_new_user.php',
-                data : data,
-                beforeSend: function(){
-                    var name = $("#userName").val();
-                   var password = $("#newPassword").val();
-                   if (name === '' || password === '') {
-                       alert("you must fill in both fields");
-                   } 
-                   else if ((password.length) < 8) {
-                       alert("Password should atleast 8 character in length");
-                    } 
-                },
-                success :  function(data) {
-                     
-                        if (data === 'You have registered') {
-                            $("form")[0].reset();
-                        }
-                }
-            });
-        }
+            //adapted from https://www.formget.com/jquery-registration-form/
+            $("#register-submit").click(function(){
+                console.log("line 35");
+                //var form_Data = new FormData();    
+                //form_Data.append('file',input.files[0]);
+                var data = $("#register").serialize();
+                console.log(data);
+                // $.ajax({
+                //     type : 'POST',
+                //     url  : 'add_new_user.php',
+                //     data : data,
 
-            
-            //cheacking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
+                //     beforeSend:function(){
+                //         console.log(data);
+                //         var name = $("#userName").val();
+                //         var password = $("#newPassword").val();
+                //         if (name == '' || password == '') {
+                //             alert("you must fill in both fields");
+                //         }
+                //         else if ((password.length) < 8) {
+                //             alert("Password should atleast 8 character in length");
+                //         }
+                //     },
+                //     success:function(data) {
+                //         if (data == 'You have registered') {
+                //             $("#register")[0].reset(); // reset form
+                //             document.getElementById("message").innerHTML="You successfully registered";
+                //         }
+                //     }
+                // });
+            });
+
+            //checking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
                 var leapYear ;
-                if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0){
+                if ((year % 4 == 0 && year % 100 !== 0) || year % 400 == 0){
                     leapYear=true;
                 }
                 else {
@@ -72,13 +155,13 @@
                 var numDays ;
                 
                 //      April        june          September    November
-                if(month===3 || month===5 || month===8 || month===10){
+                if(month==3 || month==5 || month==8 || month==10){
                     numDays=30;
                 }
-                if( month===1 && !isLeapYear(year)){
+                if( month==1 && !isLeapYear(year)){
                     numDays=28;
                 }
-                if( month===1 && isLeapYear(year)){
+                if( month==1 && isLeapYear(year)){
                     numDays=29;
                 }
                 else{
@@ -208,91 +291,13 @@
                 document.getElementById("calSpot").innerHTML = cal;
                 $("td").click(viewEvents);
             }
-        </script>
-    </head>
-    <body>
-        <!--buttons to move between months-->
-        <button id="prevMonth">Previous Month</button>
-        <button id="nextMonth">Next Month</button>
-        <button id="eventAdder">Add Event</button>
-        <button id="login">Login</button>
-        <button id="userAdder">Register</button>
-        
-        <div id="addUser" title="Join Our Site">
-            <p>Register to add and view events</p> 
-            <form class="form" name="register" id="register" action="#" method="POST">
-                <!--form stores information about username and password-->
-                <label for="userName">Username</label>
-                <input type="text" id="userName" name="newname"><br>
-                <label for="newPassword">Password</label>
-                <input type="password" id="newPassword" name="newpass">
-                <input type="button" name="Submit" id="registerSub" value="submit">
-            </form>
 
-        </div>
-
-        <div id="loggerIn" title="User Login">
-            <p>Login to add and view your events</p> 
-            <form name="add_new_user"  action="login.php" method="POST">
-                <!--form stores information about username and password-->
-                <label for="userName">Username</label>
-                <input type="text" id="username" name="newname"><br>
-                <label for="newPassword">Password</label>
-                <input type="password" id="password" name="newpass">
-                <input type="submit" value="Login" />
-            </form>
-        </div>
-        <!--where the calendar will print out-->
-        <p id="calSpot"> </p>
-        <div id="addEvent" title="Event Add">
-            <form name="addEvent" action="event_add.php" method="post">
-                <!--date and time fields may not always be supported, consider one of these options or may want to figure out our own fields-->
-                <label for="date">Date</label>
-                <input type="date" id="date" name="date"/> <br>
-                <label for="time">Time</label>
-                <input type="time" id="time" name="time"/> <br>
-                <label for="eventTitle">Event Title</label>
-                <input type="text" id="eventTitle" name="eventTitle"/> <br>
-                <input type=submit name="Submit" value="Submit" id="event_submit"/>
-            </form>
-        </div>
-     
-
-        <div id="viewEvents" title="Events">
-            View the events on this day
-                <?php
-//                session_start();
-//                //display events on the date selected
-//                require 'database.php';
-//                $get_events = $mysqli->prepare("select time, event_text from events where date=?, username=?");
-//                if(!$get_events){
-//                    printf("Query Prep Failed: %s\n", $mysqli->error);
-//                    exit;
-//                }
-//                $get_events->bind_param('is', $date, $user);
-//                $get_events->execute();
-//                $get_events->bind_result($time, $event);
-//                 
-//                while($get_events->fetch()){
-//					//nonusers can only see comments from other users
-//                        printf(" %s %u",
-//                        "Event title: ".htmlspecialchars($event),
-//                        "Event time: ".htmlspecialchars($time)
-//                    );
-//                } 
-//                $get_events->close();
-                ?>
-                
-        </div>
-        
-        <script>
             function start() {
                 firstCalendar();
                 document.getElementById("eventAdder").addEventListener("click", addEvent, false);
                 document.getElementById("userAdder").addEventListener("click", addUser, false);
                 document.getElementById("login").addEventListener("click", loginUser, false);
-                $("#registerSub").click(register);
-
+                //$("#registerSub").click(register);
             }
             window.onload = start;
             
@@ -303,7 +308,10 @@
                 document.getElementById("prevMonth").addEventListener("click", prevMonth, false);
                 document.getElementById("nextMonth").addEventListener("click", nextMonth, false);
             }
-            
+
+        //});
         </script>
+        
+
     </body>
 </html>
