@@ -4,7 +4,10 @@
 		$user = $_SESSION["Login"]; // * change once we have logging in functionality
 		//start session
 		//$user = SESSION_["login"];
-
+		if(!isset($_SESSION["Login"])){
+			echo "You must log in to add events";
+			exit;
+		}
 		$event = $_POST["eventTitle"];
 		$time = $_POST["time"];
 		$date = $_POST["date"];

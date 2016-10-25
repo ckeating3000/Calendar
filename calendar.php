@@ -96,9 +96,12 @@
                 $.ajax({
                    'url' : "logout.php",
                    'success' : function(data){
+                     alert(data);
                     console.log(data);
-                    alert(data);
                     $("#logout").hide();
+                    $("#eventAdder").hide();
+                    $("#userAdder").show();
+                    //logged out users shouldn't be able to add events, don't need to logout and need to register
                    }
                 });
                 return false;
@@ -127,8 +130,8 @@
                          //}
                      },
                      'success': function(data) {
-                        console.log(data);
                         alert(data);
+                        console.log(data);
                          if (data == 'You have registered') {
                              $("#register")[0].reset(); // reset form
                              //document.getElementById("message").innerHTML="You successfully registered";
@@ -151,12 +154,15 @@
                          }
                    },
                    'success': function(data){
+                     alert(data);
                     console.log(data);
-                    alert(data);
                     if(data == "Login successful"){
                         var logoutButton = "<button id='logout-button'>Logout</button>";
                         document.getElementById("logout").innerHTML = logoutButton;
                          document.getElementById("logout-button").addEventListener("click", logout, false);
+                         //logged in users can add events and don't need the register button
+                         $("#userAdder").hide();
+                         $("#eventAdder").show();
                         
                     }
                    }
@@ -170,8 +176,8 @@
                     'url': "event_add.php",
                     'data' : data,
                     'success': function(data){
-                        alert(data);
                         console.log(data);
+                        alert(data);
                     }
                 });
                 return false;
@@ -328,7 +334,7 @@
             }
             //everything that loads upon page load
             function start() {
-                
+                $("#eventAdder").hide();
                 firstCalendar();
                 //listeners for the add event, user and login buttons
                 document.getElementById("eventAdder").addEventListener("click", addEvent, false);
