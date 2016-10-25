@@ -94,12 +94,14 @@
             //    console.log("line 35");
             //    //var form_Data = new FormData();    
             //    //form_Data.append('file',input.files[0]);
-            //    var data = $("#register").serialize();
+
             //    console.log(data);
             function userAdder(){
+                var data = $("#register").serialize();
                   $.ajax({
                      'type' : "POST",
                      'url'  : "add_new_user.php",
+                     'data' : data,
                      'beforeSend' :function(){
                          var name = $("#userName").val();
                          var password = $("#newPassword").val();
@@ -124,11 +126,13 @@
             
                
             function eventAdder(){
+                var data = $("#addEvent").serialize();
                 $.ajax({
                     'type': "POST",
                     'url': "event_add.php",
-                    'success': function(data){
-                        alert(data);
+                    'data' : data,
+                    'complete': function(data){
+                        console.log(data);
                     }
                 });
                 return false;

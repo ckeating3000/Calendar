@@ -1,6 +1,6 @@
 <?php
 	require 'database.php';
-	if(isset($_POST["eventTitle"])&&isset($_POST["time"])&&isset($_POST["date"])){
+
 		$user = "Bob"; // * change once we have logging in functionality
 		//start session
 		//$user = SESSION_["login"];
@@ -43,5 +43,5 @@
 			echo "Content upload failure";
 			exit;
 		}
-	}
+
 ?>
