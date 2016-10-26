@@ -263,7 +263,7 @@
                     if(Calendar.getDay()===0){
                         cal += '<tr>';
                     }
-                    cal += '<td><input type="number" class="date">' + Calendar.getDate() + '</td>';
+                    cal += '<td>' + Calendar.getDate() + '</td>';
                     if(Calendar.getDay()===7){
                         //end row on saturday
                         cal += '</tr>';
@@ -324,7 +324,7 @@
                 //}
                 cal+= '</table>';
                 document.getElementById("calSpot").innerHTML = cal;
-                $("#calendar").on('click', '.btnSelect', viewEvents(month, year));
+                //$("#calendar").on('click', '.btnSelect', viewEvents(month, year));
             }
             //everything that loads upon page load
             function start() {
