@@ -7,7 +7,7 @@
             Calendar
         </title>
         <link rel="stylesheet" type="text/css" href="calendar.css" />
- <!--       load jquery to the page-->
+        <!--load jquery to the page-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <!--jquery ui for forms-->
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
@@ -25,7 +25,7 @@
         <button id="eventAdder">Add Event</button>
         <button id="login">Login</button>
         <button id="userAdder">Register</button>
-         <button id="logoutbutton">Logout</button>
+        <button id="logoutbutton">Logout</button>
         <!--where the calendar will print out-->
         <p id="calSpot"> </p>
         
@@ -71,7 +71,6 @@
 
         <div id="viewEvents" title="Events">
             View the events on this day
-   
         </div>
         
         <script>
@@ -140,30 +139,30 @@
             function userLogger(){
                 var data = $("#login-form").serialize();
                 $.ajax({
-                   'type' : "POST",
-                   'url'  : "login.php",
-                   'data' : data,
-                   'beforeSend' : function(){
+                    'type' : "POST",
+                    'url'  : "login.php",
+                    'data' : data,
+                    'beforeSend' : function(){
                         var name = $("#username").val();
                         var password = $("#password").val();
-                         if (name === '' || password === '') {
-                             alert("you must fill in both fields");
-                         }
-                   },
-                   'success': function(data){
-                     alert(data);
+                        if (name === '' || password === '') {
+                            alert("you must fill in both fields");
+                        }
+                    },
+                    'success' : function(data){
+                    alert(data);
                     console.log(data);
                     if(data == "Login successful"){
                         $("#logoutbutton").show();
-                         //logged in users can add events and don't need the register button
-                         $("#login").hide();
-                         $("#userAdder").hide();
-                         $("#eventAdder").show();
+                        //logged in users can add events and don't need the register button
+                        $("#login").hide();
+                        $("#userAdder").hide();
+                        $("#eventAdder").show();
                         
                     }
-                   }
+                    }
                 });
-               return false;
+                return false;
             }
             function eventAdder(){
                 var data = $("#addEvent").serialize();
