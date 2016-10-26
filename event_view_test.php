@@ -1,3 +1,4 @@
 <?php
-echo "just print me"
+echo "just print me";
+exit;
 ?>

@@ -86,25 +86,23 @@
             }
             function viewEvents(month, daySend, year){
                 month = Number(month) + 1;
-                var data = month+"/"+daySend+"/"+year;
+                var data = year+"-"+month+"-"+daySend;
                 //php script called to get all events associated with user and date
                 $.ajax({
                     'type' : "POST",
-                    'url' : "event_view_test.php",
+                    'url' : "event_view.php",
                     'data' : {
                         'dateSent' : data,
                     },
                     
-                    'complete' : function(data){
-                        //alert(data);
+                    'success' : function(data){
                         console.log(data);
                         //if(data !== "You must log in to view events"){
                         //         
                         //}
                         //
-                        var blah = "blah";
                         month =Number(month) -1;
-                        document.getElementById(daySend).innerHTML = blah;
+                        document.getElementById(daySend).innerHTML = data;
                         document.getElementById(daySend).addEventListener("click", eventEdit, false);
                     }
                 });
@@ -120,8 +118,9 @@
                    'success' : function(data){
                      alert(data);
                     console.log(data);
-                    $("#logout").hide();
+                    $("#logoutbutton").hide();
                     $("#eventAdder").hide();
+                    $("#login").show();
                     //logged out users shouldn't be able to add events, don't need to logout and need to register
                    }
                 });
@@ -182,12 +181,13 @@
                         //        $user="";
                         //    }
                         //?>;
-                        $("title").val(<?php $user?>);
+                        
 
                         //logged in users can add events and don't need the register button
                         $("#login").hide();
                         $("#userAdder").hide();
                         $("#eventAdder").show();
+                        displayCalendar();
                         
                     }
                     }
@@ -319,7 +319,9 @@
                     if(Calendar.getDay()===0){
                         cal += '<tr>';
                     }
-                    cal += '<td>' + Calendar.getDate() + '</td>';
+                    var dateString = Calendar.getDate();
+                     cal += '<td>' + Calendar.getDate() + '<div id="'+dateString +'"></div></td>';
+                    viewEvents(month, Calendar.getDate(), year);
                     if(Calendar.getDay()===7){
                         //end row on saturday
                         cal += '</tr>';
