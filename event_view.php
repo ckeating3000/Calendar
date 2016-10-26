@@ -8,7 +8,7 @@
     $user = $_SESSION["Login"];
     $date = $_POST["dateSent"];
     //get all events for a user
-    $get_events = $mysqli->prepare("select time, event_text from events where username like '?', date like '?'");
+    $get_events = $mysqli->prepare("select time, event_text from events where username=? and date=?");
     //then, all of this data could be turned into a json object, use javascript to parse
     if(!$get_events){
         printf("Query Prep Failed: %s\n", $mysqli->error);
@@ -19,12 +19,12 @@
     $get_events->bind_result($times, $events);
 
  	//links allow users to view the likes and comments of each post as well as post their own
-                while($get_events->fetch()){
-                    printf("\t<p> %s</a> <br> %s <b",
-                        "Event name: ".htmlspecialchars($event),
-                        "Event time: ".htmlspecialchars($time)
-                    );
-                }
+	while($get_events->fetch()){
+		printf("\t<p> %s</a> <br> %s <b",
+			"Event name: ".htmlspecialchars($event),
+			"Event time: ".htmlspecialchars($time)
+		);
+	}
     //$data = array();
     //$data['date'] = $dates;
     //$data['time'] = $times;
