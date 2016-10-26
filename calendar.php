@@ -79,15 +79,16 @@
             function addUser(){
                 $("#addUser").dialog();
             }
-            // function eventDelete(){
+             function eventDelete(){
 
-            // }
-            // function eventEdit(){
+             }
+             function eventEdit(){
 
-            // }
+             }
             function something(data){
-                var eventView = data;
-                eventView += '<button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
+                var stuff = data;
+                stuff += '<button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
+                alert(stuff);
                 $("#delete-button").on("click", eventDelete);
                 $("edit-button").on("click", eventEdit);
             }
