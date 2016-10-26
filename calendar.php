@@ -81,23 +81,31 @@
             function addUser(){
                 $("#addUser").dialog();
             }
+            function eventEdit(){
+                alert("Edit events here");
+            }
             function viewEvents(month, daySend, year){
                 month = Number(month) + 1;
                 var data = month+"/"+daySend+"/"+year;
                 //php script called to get all events associated with user and date
                 $.ajax({
                     'type' : "POST",
-                    'url' : "event_view.php",
+                    'url' : "event_view_test.php",
                     'data' : {
                         'dateSent' : data,
                     },
-                    'success' : function(data){
+                    
+                    'complete' : function(data){
+                        //alert(data);
                         console.log(data);
-                        if(data !== "You must log in to view events"){
-                                 month =Number(month) -1;
-                                document.getElementById(month+daySend+year).innerHTML = data;
-                        }
-                   
+                        //if(data !== "You must log in to view events"){
+                        //         
+                        //}
+                        //
+                        var blah = "blah";
+                        month =Number(month) -1;
+                        document.getElementById(daySend).innerHTML = blah;
+                        document.getElementById(daySend).addEventListener("click", eventEdit, false);
                     }
                 });
                 //alert(month+'/'+daySend+'/'+year);
@@ -114,7 +122,6 @@
                     console.log(data);
                     $("#logout").hide();
                     $("#eventAdder").hide();
-                    $("#userAdder").show();
                     //logged out users shouldn't be able to add events, don't need to logout and need to register
                    }
                 });
@@ -362,7 +369,7 @@
                         cal += '<tr>';
                     }
                      dateString = Calendar.getDate();
-                        cal += '<td id="'+Calendar.getDate()+'">' + Calendar.getDate() + '<div id="'+month+dateString+year +'" class="event-div"></div></td>';
+                        cal += '<td>' + Calendar.getDate() + '<div id="'+dateString +'"></div></td>';
                         viewEvents(month, Calendar.getDate(), year);
                     if(Calendar.getDay()===7){
                         //end row on saturday
@@ -371,6 +378,7 @@
                     //go through all the days in the month
                     Calendar.setDate(k+2);
                 }
+                
                 //  for(var h=Calendar.getDay(); h< 7; h++){
                 //    cal += '<td>  </td>';
                 //}
