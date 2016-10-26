@@ -214,7 +214,7 @@
                     'data' : user,
                     'success': function(data){
                         console.log(data);
-                        alert(data);
+                        //alert(data);
                     }
                 });
 

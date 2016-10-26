@@ -2,33 +2,37 @@
     session_start();
     //display events on the date selected
     require 'database.php';
-    //alternatively, we could just display all events for the month, for which the SQL script would be:
+    $user = $_POST["user"];
+    $month = $_POST["month"]; // << need to pass month as int
+    $year = $_POST["year"]; // << need to pass year as int
+    //get all events for a user
     $get_events = $mysqli->prepare("select date, time, event_text from events where username=?");
-    //then, all of this data could be turned into a json object, use javascript to parse 
-    
+    //then, all of this data could be turned into a json object, use javascript to parse
     if(!$get_events){
         printf("Query Prep Failed: %s\n", $mysqli->error);
         exit;
     }
     $get_events->bind_param('s', $user);
     $get_events->execute();
-    $get_events->bind_result($date $time, $event);
+    $get_events->bind_result($dates $times, $events);
 
+    $data = array();
+    $data['date'] = $dates;
+    $data['time'] = $times;
+    $data['event'] = $events;
+    //look for correct month and year and store only correct dates
+    //&&&&&&&&&&&&&fixthisbelow!!!!!!!!!!!!!!!!
+    foreach ($data as $date){
+        $pieces = explode("-", $date);
+        if($pieces[0] == $year && $pieces[1]==$month){
+            array_push($data['date'], $date)
+        }
+    }
     //make and populate an associative array containing all events for a user
     $data = array();
-    $data['date'] = $date;
-    $data['time'] = $time;
-    $data['event'] = $event;
-
-    // $json = array();
-    // while($row = mysql_fetch_array($data))     
-    // {
-    //     $json[]= array(
-    //         'date' => $row['date'],
-    //         'time' => $row['time'],
-    //         'event'=> $row['event']
-    //     );
-    // }
+    $data['date'] = $dates;
+    $data['time'] = $times;
+    $data['event'] = $events;
 
     $json_event_string = json_encode($data);
     echo $json_event_string;
@@ -58,4 +62,5 @@
     //     );
     // } 
     // $get_events->close();
+        }
 ?> 
