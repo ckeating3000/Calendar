@@ -69,11 +69,6 @@
                 <input type=submit name="Submit" value="Submit" id="event_submit"/>
             </form>
         </div>
-     
-
-        <div id="viewEvents" title="Events">
-            View the events on this day
-        </div>
         
         <script>
         //$('document').ready(function(){    
@@ -84,8 +79,17 @@
             function addUser(){
                 $("#addUser").dialog();
             }
-            function eventEdit(){
-                alert("Edit events here");
+            // function eventDelete(){
+
+            // }
+            // function eventEdit(){
+
+            // }
+            function something(data){
+                var eventView = data;
+                eventView += '<button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
+                $("#delete-button").on("click", eventDelete);
+                $("edit-button").on("click", eventEdit);
             }
             function viewEvents(month, daySend, year){
                 month = Number(month) + 1;
@@ -105,7 +109,7 @@
                         //}
                         //
                         document.getElementById(daySend).innerHTML = data;
-                        document.getElementById(daySend).addEventListener("click", eventEdit, false);
+                        $('"#'+daySend+'"').on("click", something(data));
                     }
                 });
                 //alert(month+'/'+daySend+'/'+year);
