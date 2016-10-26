@@ -1,7 +1,6 @@
 
 <!DOCTYPE HTML>
 <html>
-    <?php session_start() ?>
     <!-- this script inspired by www.htmlbestcodes.com-Coded by: Krishna Eydat -->
     <head>
         <title>Calendar</title>
@@ -56,14 +55,7 @@
         <div id="addEventer" title="Event Add">
             <form id="addEvent" action="#" method="post">
                 <!--date and time fields may not always be supported, consider one of these options or may want to figure out our own fields-->
-                <?php 
-                    $token;
-                    if(isset($_SESSION["token"])){
-                        $token = $_SESSION["token"];
-                    }else{
-                        $token = "";
-                    }
-                ?>
+                <?php  session_start(); $token = $_SESSION["token"]; ?>
                 <input type="hidden" name="token" value="<?php echo $token;?>" />
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date"/> <br>
@@ -89,14 +81,27 @@
             function addUser(){
                 $("#addUser").dialog();
             }
-            function viewEvents(month, year){
+            function viewEvents(month, daySend, year){
+                month = Number(month) + 1;
+                var data = month+"/"+daySend+"/"+year;
                 //php script called to get all events associated with user and date
-                var currentRow=$(this).closest("tr");
-                //based onhttp://codepedia.info/jquery-get-table-cell-td-value-div/
-                var date = currentRow.find("td").text();
-                alert(date);
-                //reveal the dialogue with those events listed 
-                //$("#viewEvents").dialog();
+                $.ajax({
+                    'type' : "POST",
+                    'url' : "event_view.php",
+                    'data' : {
+                        'dateSent' : data,
+                    },
+                    'success' : function(data){
+                        console.log(data);
+                        if(data !== "You must log in to view events"){
+                                 month =Number(month) -1;
+                                document.getElementById(month+daySend+year).innerHTML = data;
+                        }
+                   
+                    }
+                });
+                //alert(month+'/'+daySend+'/'+year);
+ 
             }
             function loginUser(){
                 $("#loggerIn").dialog();
@@ -162,14 +167,14 @@
                     if(data == "Login successful"){
                         $("#logoutbutton").show();
                         //check if session login variable is set, if so, then assign to title
-                        <?php 
-                            $user;
-                            if(isset($_SESSION["login"])){
-                                $user = $_SESSION["login"];
-                            }else{
-                                $user="";
-                            }
-                        ?>
+                        //<?php 
+                        //    $user;
+                        //    if(isset($_SESSION["login"])){
+                        //        $user = $_SESSION["login"];
+                        //    }else{
+                        //        $user="";
+                        //    }
+                        //?>;
                         $("title").val(<?php $user?>);
 
                         //logged in users can add events and don't need the register button
@@ -197,29 +202,29 @@
             }
 
             // first check for login, then call event_view.php to get a JSON object with all events for that user
-            function eventViewer(){
-                //check whether user is logged in
-                var user = "<?php 
-                    $user;
-                    if(isset($_SESSION["login"])){
-                        echo $_SESSION["login"];
-                    }else{
-                        echo"";
-                    }
-                ?>";
-
-                $.ajax({
-                    'type': "POST",
-                    'url': "event_view.php",
-                    'data' : user,
-                    'success': function(data){
-                        console.log(data);
-                        //alert(data);
-                    }
-                });
-
-
-            }
+            //function eventViewer(){
+            //    //check whether user is logged in
+            //    //var user = "<?php 
+            //    //    $user;
+            //    //    if(isset($_SESSION["login"])){
+            //    //        echo $_SESSION["login"];
+            //    //    }else{
+            //    //        echo"";
+            //    //    }
+            //    //?>";
+            //
+            //    $.ajax({
+            //        'type': "POST",
+            //        'url': "event_view.php",
+            //        'data' : user,
+            //        'success': function(data){
+            //            console.log(data);
+            //            //alert(data);
+            //        }
+            //    });
+            //
+            //
+            //}
 
             //checking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
@@ -334,6 +339,7 @@
                 var year = Calendar.getFullYear();
                 var daysInMonth = monthDays(month, year);    // make variable
                 var cal = '';    // where calendar table will be stored
+                var dateString ;
                 
                 Calendar.setDate(1);    // Start the calendar day at '1'
                 Calendar.setMonth(month);    // Start the calendar month at now
@@ -355,12 +361,14 @@
                     if(Calendar.getDay()===0){
                         cal += '<tr>';
                     }
-                        cal += '<td>' + Calendar.getDate() + '<button class="btnSelect">View Events</button></td>';
+                     dateString = Calendar.getDate();
+                        cal += '<td id="'+Calendar.getDate()+'">' + Calendar.getDate() + '<div id="'+month+dateString+year +'" class="event-div"></div></td>';
+                        viewEvents(month, Calendar.getDate(), year);
                     if(Calendar.getDay()===7){
                         //end row on saturday
                         cal += '</tr>';
                     }
-                    //go through all the days in the month  
+                    //go through all the days in the month
                     Calendar.setDate(k+2);
                 }
                 //  for(var h=Calendar.getDay(); h< 7; h++){
@@ -368,13 +376,14 @@
                 //}
                 cal+= '</table>';
                 document.getElementById("calSpot").innerHTML = cal;
+                //$("td").on('click', viewEvents(month, $(this.target).val(), year));
                 //$("#calendar").on('click', '.btnSelect', viewEvents(month, year));
             }
             //everything that loads upon page load
             function start() {
                 $("#eventAdder").hide();
                 $("#logoutbutton").hide();
-                firstCalendar();
+                
                 //listeners for the add event, user and login buttons
                 document.getElementById("eventAdder").addEventListener("click", addEvent, false);
                 document.getElementById("userAdder").addEventListener("click", addUser, false);
@@ -393,6 +402,7 @@
                     event.preventDefault();
                     userLogger();
                 });
+                firstCalendar();
                 //$("#registerSub").click(register);
             }
             window.onload = start;

@@ -2,42 +2,51 @@
     session_start();
     //display events on the date selected
     require 'database.php';
-    $user = $_POST["user"];
-    $month = $_POST["month"]; // << need to pass month as int
-    $year = $_POST["year"]; // << need to pass year as int
+    if(!isset($_SESSION["Login"])){
+        echo "You must log in to view events";
+    }
+    $user = $_SESSION["Login"];
+    $date = $_POST["dateSent"];
     //get all events for a user
-    $get_events = $mysqli->prepare("select date, time, event_text from events where username=?");
+    $get_events = $mysqli->prepare("select time, event_text from events where username like '?', date like '?'");
     //then, all of this data could be turned into a json object, use javascript to parse
     if(!$get_events){
         printf("Query Prep Failed: %s\n", $mysqli->error);
         exit;
     }
-    $get_events->bind_param('s', $user);
+    $get_events->bind_param('ss', $user, $date);
     $get_events->execute();
-    $get_events->bind_result($dates $times, $events);
+    $get_events->bind_result($times, $events);
 
-    $data = array();
-    $data['date'] = $dates;
-    $data['time'] = $times;
-    $data['event'] = $events;
-    //look for correct month and year and store only correct dates
-    //&&&&&&&&&&&&&fixthisbelow!!!!!!!!!!!!!!!!
-    foreach ($data as $date){
-        $pieces = explode("-", $date);
-        if($pieces[0] == $year && $pieces[1]==$month){
-            array_push($data['date'], $date)
-        }
-    }
-    //make and populate an associative array containing all events for a user
-    $data = array();
-    $data['date'] = $dates;
-    $data['time'] = $times;
-    $data['event'] = $events;
-
-    $json_event_string = json_encode($data);
-    echo $json_event_string;
-
-    $get_events->close();
+ 	//links allow users to view the likes and comments of each post as well as post their own
+                while($get_events->fetch()){
+                    printf("\t<p> %s</a> <br> %s <b",
+                        "Event name: ".htmlspecialchars($event),
+                        "Event time: ".htmlspecialchars($time)
+                    );
+                }
+    //$data = array();
+    //$data['date'] = $dates;
+    //$data['time'] = $times;
+    //$data['event'] = $events;
+    ////look for correct month and year and store only correct dates
+    ////&&&&&&&&&&&&&fixthisbelow!!!!!!!!!!!!!!!!
+    //foreach ($data as $date){
+    //    $pieces = explode("-", $date);
+    //    if($pieces[0] == $year && $pieces[1]==$month){
+    //        array_push($data['date'], $date);
+    //    }
+    //}
+    ////make and populate an associative array containing all events for a user
+    //$data = array();
+    //$data['date'] = $dates;
+    //$data['time'] = $times;
+    //$data['event'] = $events;
+    //
+    //$json_event_string = json_encode($data);
+    //echo $json_event_string;
+    //
+    //$get_events->close();
 
 
 
@@ -62,5 +71,5 @@
     //     );
     // } 
     // $get_events->close();
-        }
+        
 ?> 

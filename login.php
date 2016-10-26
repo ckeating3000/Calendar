@@ -34,7 +34,7 @@
     if(password_verify($password_guess, $password_db)==$password_db){
         session_start();
         $_SESSION["Login"] = $username_db;
-        $_SESSION['token'] = substr(md5(rand()), 0, 10); // generate a 10-character random string
+        $_SESSION["token"] = substr(md5(rand()), 0, 10); // generate a 10-character random string
         echo "Login successful";
         exit;
     }
