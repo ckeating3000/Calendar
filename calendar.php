@@ -1,11 +1,10 @@
 
 <!DOCTYPE HTML>
 <html>
+    <?php session_start() ?>
     <!-- this script inspired by www.htmlbestcodes.com-Coded by: Krishna Eydat -->
     <head>
-        <title>
-            Calendar
-        </title>
+        <title>Calendar</title>
         <link rel="stylesheet" type="text/css" href="calendar.css" />
         <!--load jquery to the page-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -13,10 +12,9 @@
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js">
             //forms go here
-        </script>
-
-        
+        </script> 
     </head>
+    
     <body>
         <!--buttons to move between months-->
         <button id="prevMonth">Previous Month</button>
@@ -58,6 +56,15 @@
         <div id="addEventer" title="Event Add">
             <form id="addEvent" action="#" method="post">
                 <!--date and time fields may not always be supported, consider one of these options or may want to figure out our own fields-->
+                <?php 
+                    $token;
+                    if(isset($_SESSION["token"])){
+                        $token = $_SESSION["token"];
+                    }else{
+                        $token = "";
+                    }
+                ?>
+                <input type="hidden" name="token" value="<?php echo $token;?>" />
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date"/> <br>
                 <label for="time">Time</label>
@@ -154,6 +161,17 @@
                     console.log(data);
                     if(data == "Login successful"){
                         $("#logoutbutton").show();
+                        //check if session login variable is set, if so, then assign to title
+                        <?php 
+                            $user;
+                            if(isset($_SESSION["login"])){
+                                $user = $_SESSION["login"];
+                            }else{
+                                $user="";
+                            }
+                        ?>
+                        $("title").val(<?php $user?>);
+
                         //logged in users can add events and don't need the register button
                         $("#login").hide();
                         $("#userAdder").hide();
@@ -177,6 +195,32 @@
                 });
                 return false;
             }
+
+            // first check for login, then call event_view.php to get a JSON object with all events for that user
+            function eventViewer(){
+                //check whether user is logged in
+                var user = "<?php 
+                    $user;
+                    if(isset($_SESSION["login"])){
+                        echo $_SESSION["login"];
+                    }else{
+                        echo"";
+                    }
+                ?>";
+
+                $.ajax({
+                    'type': "POST",
+                    'url': "event_view.php",
+                    'data' : user,
+                    'success': function(data){
+                        console.log(data);
+                        alert(data);
+                    }
+                });
+
+
+            }
+
             //checking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
                 var leapYear ;

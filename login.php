@@ -3,8 +3,6 @@
     session_start();
     session_destroy();
     require 'database.php';
-
-    
 	
     $username=$_POST["username"];
     $password_guess=$_POST["userpass"];
@@ -20,8 +18,7 @@
     	echo "Invalid password";
     	exit;
     }
-
-
+    
         //if that's a reasonable user, log them in
     $check_u_p = $mysqli->prepare("select username, hash_key from users where username=? ");
     $check_u_p->bind_param('s', $username);
