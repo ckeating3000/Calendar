@@ -15,6 +15,7 @@
     </head>
     
     <body>
+    <?php  session_destroy(); session_start(); ?>
         <!--buttons to move between months-->
         <button id="prevMonth">Previous Month</button>
         <button id="nextMonth">Next Month</button>
@@ -55,7 +56,13 @@
         <div id="addEventer" title="Event Add">
             <form id="addEvent" action="#" method="post">
                 <!--date and time fields may not always be supported, consider one of these options or may want to figure out our own fields-->
-                <?php  session_start(); $token = $_SESSION["token"]; ?>
+                <?php 
+                $user;
+                if(isset($_SESSION['token'])){
+                    $token = $_SESSION['token'];
+                }else{
+                    $token="";
+                }?>
                 <input type="hidden" name="token" value="<?php echo $token;?>" />
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date"/> <br>
@@ -83,38 +90,39 @@
             }
             function viewEvents(month, daySend, year){
                 month = Number(month) + 1;
-                var data = month+"/"+daySend+"/"+year;
+                var data = year+"-"+month+"-"+daySend;
                 //php script called to get all events associated with user and date
                 $.ajax({
                     'type' : "POST",
                     'url' : "event_view.php",
                     'data' : {
-                        'dateSent' : data,
+                        'dateSent' : data, 
                     },
                     'success' : function(data){
                         console.log(data);
+                        alert(data);
                         if(data !== "You must log in to view events"){
-                                 month =Number(month) -1;
-                                document.getElementById(month+daySend+year).innerHTML = data;
+                            month = Number(month) -1;
+                            document.getElementById(month+daySend+year).innerHTML = data;
                         }
-                   
                     }
                 });
                 //alert(month+'/'+daySend+'/'+year);
- 
+                return false;
             }
             function loginUser(){
                 $("#loggerIn").dialog();
             }
             function logout(){
                 $.ajax({
-                   'url' : "logout.php",
-                   'success' : function(data){
-                     alert(data);
-                    console.log(data);
-                    $("#logout").hide();
-                    $("#eventAdder").hide();
-                    $("#userAdder").show();
+                    'url' : "logout.php",
+                    'success' : function(data){
+                        alert(data);
+                        console.log(data);
+                        $("#logoutbutton").hide();
+                        $("#eventAdder").hide();
+                        $("#userAdder").show();
+                        $("#login").show();
                     //logged out users shouldn't be able to add events, don't need to logout and need to register
                    }
                 });
@@ -166,22 +174,10 @@
                     console.log(data);
                     if(data == "Login successful"){
                         $("#logoutbutton").show();
-                        //check if session login variable is set, if so, then assign to title
-                        //<?php 
-                        //    $user;
-                        //    if(isset($_SESSION["login"])){
-                        //        $user = $_SESSION["login"];
-                        //    }else{
-                        //        $user="";
-                        //    }
-                        //?>;
-                        $("title").val(<?php $user?>);
-
                         //logged in users can add events and don't need the register button
                         $("#login").hide();
                         $("#userAdder").hide();
-                        $("#eventAdder").show();
-                        
+                        $("#eventAdder").show();    
                     }
                     }
                 });
@@ -206,8 +202,8 @@
             //    //check whether user is logged in
             //    //var user = "<?php 
             //    //    $user;
-            //    //    if(isset($_SESSION["login"])){
-            //    //        echo $_SESSION["login"];
+            //    //    if(isset($_SESSION['login'])){
+            //    //        echo $_SESSION['login'];
             //    //    }else{
             //    //        echo"";
             //    //    }

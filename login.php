@@ -4,8 +4,8 @@
     session_destroy();
     require 'database.php';
 	
-    $username=$_POST["username"];
-    $password_guess=$_POST["userpass"];
+    $username=$_POST['username'];
+    $password_guess=$_POST['userpass'];
     //make sure username is safe
     //check username validity
     if( !preg_match('/^[\w_\-]+$/', $username) ){
@@ -33,15 +33,15 @@
     }
     if(password_verify($password_guess, $password_db)==$password_db){
         session_start();
-        $_SESSION["Login"] = $username_db;
-        $_SESSION["token"] = substr(md5(rand()), 0, 10); // generate a 10-character random string
+        $_SESSION['Login'] = $username_db;
+        $_SESSION['token'] = substr(md5(rand()), 0, 10); // generate a 10-character random string
         echo "Login successful";
         exit;
     }
         //send the user to failed login if not a user or allow them to home menu
     else{
-    echo "Invalid Login Credentials";
-     exit;
+        echo "Invalid Login Credentials";
+        exit;
     }
 
 
