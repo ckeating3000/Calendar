@@ -1,6 +1,9 @@
 
 <!DOCTYPE HTML>
 <html>
+    <?php
+    session_start();
+    ?>
     <!-- this script inspired by www.htmlbestcodes.com-Coded by: Krishna Eydat -->
     <head>
         <title>Calendar</title>
@@ -55,7 +58,7 @@
         <div id="addEventer" title="Event Add">
             <form id="addEvent" action="#" method="post">
                 <!--date and time fields may not always be supported, consider one of these options or may want to figure out our own fields-->
-                <?php  session_start(); $token = $_SESSION["token"]; ?>
+                <?php  $token = $_SESSION["token"]; ?>
                 <input type="hidden" name="token" value="<?php echo $token;?>" />
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date"/> <br>
@@ -101,7 +104,6 @@
                         //         
                         //}
                         //
-                        month =Number(month) -1;
                         document.getElementById(daySend).innerHTML = data;
                         document.getElementById(daySend).addEventListener("click", eventEdit, false);
                     }
@@ -121,10 +123,13 @@
                     $("#logoutbutton").hide();
                     $("#eventAdder").hide();
                     $("#login").show();
+                    $("#userAdder").show();
+                    firstCalendar();
                     //logged out users shouldn't be able to add events, don't need to logout and need to register
                    }
                 });
                 return false;
+                
             }
             //adapted from https://www.formget.com/jquery-registration-form/
             function userAdder(){
@@ -187,7 +192,7 @@
                         $("#login").hide();
                         $("#userAdder").hide();
                         $("#eventAdder").show();
-                        displayCalendar();
+                        firstCalendar();
                         
                     }
                     }
@@ -203,35 +208,11 @@
                     'success': function(data){
                         console.log(data);
                         alert(data);
+                        firstCalendar();
                     }
                 });
                 return false;
             }
-
-            // first check for login, then call event_view.php to get a JSON object with all events for that user
-            //function eventViewer(){
-            //    //check whether user is logged in
-            //    //var user = "<?php 
-            //    //    $user;
-            //    //    if(isset($_SESSION["login"])){
-            //    //        echo $_SESSION["login"];
-            //    //    }else{
-            //    //        echo"";
-            //    //    }
-            //    //?>";
-            //
-            //    $.ajax({
-            //        'type': "POST",
-            //        'url': "event_view.php",
-            //        'data' : user,
-            //        'success': function(data){
-            //            console.log(data);
-            //            //alert(data);
-            //        }
-            //    });
-            //
-            //
-            //}
 
             //checking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
@@ -301,10 +282,11 @@
                 Calendar.setDate(1);    // Start the calendar day at '1'
                 Calendar.setMonth(month);    // Start the calendar month at now
                 Calendar.setFullYear(year);
+                var dateString ;
                 //set header to current month
                 cal += '<h1>' + months[month] + ' ' + year +'<h1>';
                 //make table to display days of month
-                cal += '<table><tr>';
+                cal += '<table id="calendar"><tr>';
                 for(var i= 0; i< 7; i++){
                     cal += '<th>' +weekDays[i] +'</th>';
                 }
@@ -319,7 +301,7 @@
                     if(Calendar.getDay()===0){
                         cal += '<tr>';
                     }
-                    var dateString = Calendar.getDate();
+                    dateString = Calendar.getDate();
                      cal += '<td>' + Calendar.getDate() + '<div id="'+dateString +'"></div></td>';
                     viewEvents(month, Calendar.getDate(), year);
                     if(Calendar.getDay()===7){
