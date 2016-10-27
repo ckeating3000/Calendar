@@ -3,6 +3,10 @@
 <html>
     <?php
     session_start();
+    if(isset($_SESSION['Login'])){
+        session_destroy();
+        session_start();
+    }
     ?>
     <!-- this script inspired by www.htmlbestcodes.com-Coded by: Krishna Eydat -->
     <head>
@@ -26,6 +30,7 @@
         <button id="login">Login</button>
         <button id="userAdder">Register</button>
         <button id="logoutbutton">Logout</button>
+        <div id="indevent"></div>
         <!--where the calendar will print out-->
         <p id="calSpot"> </p>
         
@@ -85,13 +90,16 @@
              function eventEdit(){
 
              }
+             
             function something(data){
+                
                 var stuff = data;
-                stuff += '<button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
-                alert(stuff);
+                stuff += '<br><button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
+                document.getElementById("indevent").innerHTML = stuff;
                 $("#delete-button").on("click", eventDelete);
-                $("edit-button").on("click", eventEdit);
+                $("#edit-button").on("click", eventEdit);
             }
+            
             function viewEvents(month, daySend, year){
                 month = Number(month) + 1;
                 var data = year+"-"+month+"-"+daySend;
@@ -105,15 +113,16 @@
                     
                     'success' : function(data){
                         console.log(data);
-                        //if(data !== "You must log in to view events"){
-                        //         
-                        //}
-                        //
                         document.getElementById(daySend).innerHTML = data;
-                        $('"#'+daySend+'"').on("click", something(data));
+                        if(data !== "You must log in to view events"){
+                            $(".eventdisplay").on("click", something(data));
+                        }
+                        //send event id as json data
+                        //not working yet, want to display the event with buttons to edit or delete
+                        //https://forum.jquery.com/topic/hidden-value-in-a-ajax-data-response-in-html
+                        
                     }
                 });
-                //alert(month+'/'+daySend+'/'+year);
  
             }
             function loginUser(){
