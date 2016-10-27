@@ -23,10 +23,10 @@
 
         //links allow users to view the likes and comments of each post as well as post their own
         while($get_events->fetch()){
-            printf("\t<p class='eventdisplay' value='%u'> %s %s <br> </p>",
-                htmlspecialchars($id),  
+            printf("\t<p class='eventdisplay'> %s %s <div class='hide'>%u</div><br> </p>", 
                 htmlspecialchars($times),
-                htmlspecialchars($events)
+                htmlspecialchars($events),
+                htmlspecialchars($id)
             );
         }
         $get_events->close();

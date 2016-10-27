@@ -85,37 +85,38 @@
                 $("#addUser").dialog();
             }
              function eventDelete(){
-
+                alert("Where deleting will happen");
              }
              function eventEdit(){
-
+                alert("Where editing form will pop up");
              }
-             
-            function something(data){
-                
-                var stuff = data;
-                stuff += '<br><button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
-                document.getElementById("indevent").innerHTML = stuff;
-                $("#delete-button").on("click", eventDelete);
-                $("#edit-button").on("click", eventEdit);
-            }
             
             function viewEvents(month, daySend, year){
                 month = Number(month) + 1;
-                var data = year+"-"+month+"-"+daySend;
+                var events = year+"-"+month+"-"+daySend;
                 //php script called to get all events associated with user and date
                 $.ajax({
                     'type' : "POST",
                     'url' : "event_view.php",
                     'data' : {
-                        'dateSent' : data,
+                        'dateSent' : events,
                     },
                     
                     'success' : function(data){
                         console.log(data);
                         document.getElementById(daySend).innerHTML = data;
-                        if(data !== "You must log in to view events"){
-                            $(".eventdisplay").on("click", something(data));
+                        if(data != "You must log in to view events"){
+                            //var idreg = "\d+";
+                            //var id = data.match(idreg);
+                            $(".eventdisplay").click(function(data){
+                                //show event popout for editing/deleting when event is clicked
+                                var stuff = '<br><div>'+data+'</div><button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
+                                document.getElementById("indevent").innerHTML = stuff;
+                                $("#delete-button").on("click", eventDelete);
+                                 $("#edit-button").on("click", eventEdit);
+                            }
+                                                     
+                            );
                         }
                         //send event id as json data
                         //not working yet, want to display the event with buttons to edit or delete
@@ -123,6 +124,7 @@
                         
                     }
                 });
+                return false;
  
             }
             function loginUser(){

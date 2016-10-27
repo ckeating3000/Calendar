@@ -29,24 +29,28 @@ button:hover {
     display: inline-block;
 }
 #addEvent {
-    display:none
+    display:none;
 }
 #viewEvents {
-    display:none
+    display:none;
 }
 #addUser {
-    display: none
+    display: none;
 }
 #loggerIn {
-    display: none
+    display: none;
 }
 th{
-    font-size: 20px
+    font-size: 20px;
 }
 td{
-    font-size: 20px
+    font-size: 20px;
 }
 .eventdisplay {
-    font-size: 12px
+    font-size: 12px;
+}
+.hide {
+    font-size: 12px;
+    color: LightSkyBlue;
 }
 /*http://stackoverflow.com/questions/18147887/html-layout-adding-sidebar-column-to-existing-site popout for event view*/
