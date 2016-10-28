@@ -59,6 +59,20 @@
             </form>
         </div>
 
+        <div id="eventDeleter" title="Delete Event">
+            <p>Are you sure you want to delete this event?</p> 
+            <form name="eventDelete1"  id="eventDelete1" action="#" method="POST">
+                <!--form stores information about username and password-->
+                <?php  $token = $_SESSION["token"]; ?>
+                <input type="hidden" name="token" value="<?php echo $token;?>" />
+                <input type="radio" id="yes"> Yes <br>
+                <input type="radio" id="no"> No <br>
+                <input type=submit name="Submit" value="Submit" id="delete_submit"/>
+                <!-- need to include hidden inputs for user, date, time, event -->
+                
+            </form>
+        </div>
+
 
         <div id="addEventer" title="Event Add">
             <form id="addEvent" action="#" method="post">
@@ -85,7 +99,7 @@
                 $("#addUser").dialog();
             }
              function eventDelete(){
-                alert("Where deleting will happen");
+                $("#eventDeleter").dialog();
              }
              function eventEdit(){
                 alert("Where editing form will pop up");
@@ -229,6 +243,21 @@
                 return false;
             }
 
+            function event_delete(){
+                var data = $("#eventDelete1").serialize();
+                $.ajax({
+                    'type': "POST",
+                    'url': "event_delete.php",
+                    'data' : data,
+                    'success': function(data){
+                        console.log(data);
+                        alert(data);
+                        firstCalendar();
+                    }
+                });
+                return false;
+            }
+
             //checking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
             function isLeapYear(year){
                 var leapYear ;
@@ -335,11 +364,11 @@
                 document.getElementById("calSpot").innerHTML = cal;
                 for(var k=0; k< daysInMonth; k++){
                     viewEvents(month, k+1, year);
-                    var id = k+1;
-                    $("#"+id).click(function(event){ //
-                        
-                    }
-                    );
+                    //var id = k+1;
+                    //$("#"+id).click(function(event){ //
+                    //    
+                    //}
+                    //);
                 }
             }
             
