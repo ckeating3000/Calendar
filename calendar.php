@@ -95,6 +95,7 @@
                 month = Number(month) + 1;
                 var events = year+"-"+month+"-"+daySend;
                 //php script called to get all events associated with user and date
+                
                 $.ajax({
                     'type' : "POST",
                     'url' : "event_view.php",
@@ -103,7 +104,6 @@
                     },
                     
                     'success' : function(data){
-                        console.log(data);
                         document.getElementById(daySend).innerHTML = data;
                         if(data != "You must log in to view events"){
                             //var idreg = "\d+";
@@ -111,11 +111,10 @@
                             $(".eventdisplay").click(function(data){
                                 //show event popout for editing/deleting when event is clicked
                                 var stuff = '<br><div>'+data+'</div><button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
-                                document.getElementById("indevent").innerHTML = stuff;
+                                document.getElementById(daySend).innerHTML = stuff;
                                 $("#delete-button").on("click", eventDelete);
-                                 $("#edit-button").on("click", eventEdit);
-                            }
-                                                     
+                                $("#edit-button").on("click", eventEdit);
+                            }                     
                             );
                         }
                         //send event id as json data
@@ -125,7 +124,7 @@
                     }
                 });
                 return false;
- 
+
             }
             function loginUser(){
                 $("#loggerIn").dialog();
@@ -163,7 +162,7 @@
                          //else if ((password.length) < 8) {
                          //    alert("Password should be at least 8 character in length");
                          //}
-                     },
+                      },
                      'success': function(data) {
                         alert(data);
                         console.log(data);
@@ -319,7 +318,8 @@
                     }
                     dateString = Calendar.getDate();
                      cal += '<td>' + Calendar.getDate() + '<div id="'+dateString +'"></div></td>';
-                    viewEvents(month, Calendar.getDate(), year);
+                    //viewEvents(month, Calendar.getDate(), year);
+
                     if(Calendar.getDay()===7){
                         //end row on saturday
                         cal += '</tr>';
@@ -333,6 +333,14 @@
                   //  }
                 cal+= '</table>';
                 document.getElementById("calSpot").innerHTML = cal;
+                for(var k=0; k< daysInMonth; k++){
+                    viewEvents(month, k+1, year);
+                    var id = k+1;
+                    $("#"+id).click(function(event){ //
+                        
+                    }
+                    );
+                }
             }
             
             //first load
@@ -363,20 +371,21 @@
                     cal += '<td>  </td>';
                 }
                 //put days in the calendar
-                for(var k=0; k< daysInMonth; k++){
+                for(var k=1; k<= daysInMonth; k++){
                     //at sunday, start a new row
                     if(Calendar.getDay()===0){
                         cal += '<tr>';
                     }
-                     dateString = Calendar.getDate();
-                        cal += '<td>' + Calendar.getDate() + '<div id="'+dateString +'"></div></td>';
-                        viewEvents(month, Calendar.getDate(), year);
+                    dateString = Calendar.getDate();
+                    cal += '<td>' + Calendar.getDate() + '<div id="'+dateString +'"></div></td>';
+                    //viewEvents(month, Calendar.getDate(), year);
+
                     if(Calendar.getDay()===7){
                         //end row on saturday
                         cal += '</tr>';
                     }
                     //go through all the days in the month
-                    Calendar.setDate(k+2);
+                    Calendar.setDate(k+1); //Calendar.setDate(k+2);
                 }
                 
                 //  for(var h=Calendar.getDay(); h< 7; h++){
@@ -384,6 +393,14 @@
                 //}
                 cal+= '</table>';
                 document.getElementById("calSpot").innerHTML = cal;
+                for(var k=0; k < daysInMonth; k++){
+                    viewEvents(month, k+1, year);
+                    var id = k+1;
+                    $("#"+id).click(function(event){
+                        alert("You must log in to view events");
+                    }
+                    );
+                }
                 //$("td").on('click', viewEvents(month, $(this.target).val(), year));
                 //$("#calendar").on('click', '.btnSelect', viewEvents(month, year));
             }
