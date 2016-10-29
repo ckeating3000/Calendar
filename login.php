@@ -35,12 +35,25 @@
         session_start();
         $_SESSION['Login'] = $username_db;
         $_SESSION['token'] = substr(md5(rand()), 0, 10); // generate a 10-character random string
-        echo "Login successful";
+        $token = substr(md5(rand()), 0, 10);
+        $result = array(
+            "result"=>$username_db,
+            "token"=>$token,
+            "message"=> "Login successful"
+        );
+
+        echo json_encode($result);
         exit;
     }
         //send the user to failed login if not a user or allow them to home menu
     else{
-        echo "Invalid Login Credentials";
+        $result = array(
+            "result"=>"",
+            "token"=>"",
+            "message"=> "Login unsuccessful"
+        );
+
+        echo json_encode($result);
         exit;
     }
 

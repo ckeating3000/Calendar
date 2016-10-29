@@ -11,7 +11,7 @@
         $user = $_SESSION['Login'];
         $date = $_POST['dateSent']; // 2016-06-04
         //get all events for a user
-        $get_events = $mysqli->prepare("select time, event_text, event_id from events where username=? and date=?");
+        $get_events = $mysqli->prepare("select time, event_text, event_id from events where username=? and date=? order by time");
         //then, all of this data could be turned into a json object, use javascript to parse
         if(!$get_events){
             printf("Query Prep Failed: %s\n", $mysqli->error);
@@ -21,14 +21,32 @@
         $get_events->execute();
         $get_events->bind_result($times, $events, $id);
 
+        $response_array = array();
+        //     "event" => array(
+        //         "id" => $id,
+        //         "time" => $time,
+        //         "event_text" => $event_text
+        //         )
+        // );
+        // echo json_encode($response_array);
         //links allow users to view the likes and comments of each post as well as post their own
         while($get_events->fetch()){
-            printf("\t<p class='eventdisplay'> %s %s <div class='hide'>%u</div><br> </p>", 
-                htmlspecialchars($times),
-                htmlspecialchars($events),
-                htmlspecialchars($id)
-            );
+            
+            array_push($response_array, array(
+                "id" => $id,
+                "time" => $times,
+                "event_text" => $events
+                ));
+
+
+            // printf("\t<p class='eventdisplay'> %s %s <div class='hide'>%d</div><br> </p>", 
+            //     htmlspecialchars($times),
+            //     htmlspecialchars($events),
+            //     htmlspecialchars($id)
+
+            
         }
+        echo json_encode($response_array);
         $get_events->close();
         exit;
     } 

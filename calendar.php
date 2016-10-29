@@ -1,13 +1,8 @@
 
 <!DOCTYPE HTML>
 <html>
-    <?php
-    session_start();
-    if(isset($_SESSION['Login'])){
-        session_destroy();
-        session_start();
-    }
-    ?>
+    <?php session_start(); ?>
+
     <!-- this script inspired by www.htmlbestcodes.com-Coded by: Krishna Eydat -->
     <head>
         <title>Calendar</title>
@@ -61,15 +56,14 @@
 
         <div id="eventDeleter" title="Delete Event">
             <p>Are you sure you want to delete this event?</p> 
-            <form name="eventDelete1"  id="eventDelete1" action="#" method="POST">
+            <form name="eventDelete1"  id="eventDel" action="#" method="POST">
                 <!--form stores information about username and password-->
-                <?php  $token = $_SESSION["token"]; ?>
+                <input type="hidden" name="token" value= />
                 <input type="hidden" name="token" value="<?php echo $token;?>" />
                 <input type="radio" id="yes"> Yes <br>
                 <input type="radio" id="no"> No <br>
                 <input type=submit name="Submit" value="Submit" id="delete_submit"/>
-                <!-- need to include hidden inputs for user, date, time, event -->
-                
+                <!-- need to include hidden inputs for user, date, time, event --> 
             </form>
         </div>
 
@@ -77,8 +71,8 @@
         <div id="addEventer" title="Event Add">
             <form id="addEvent" action="#" method="post">
                 <!--date and time fields may not always be supported, consider one of these options or may want to figure out our own fields-->
-                <?php  $token = $_SESSION["token"]; ?>
-                <input type="hidden" name="token" value="<?php echo $token;?>" />
+                
+                <input type="hidden" name="token" value= />
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date"/> <br>
                 <label for="time">Time</label>
@@ -92,11 +86,14 @@
         <script>
         //$('document').ready(function(){    
             //add event dialogue
+            var global_username="";
+            var global_token="";
+
             function addEvent(){
-                $("#addEvent").dialog();
+                $("#addEventer").dialog('open');
             }
             function addUser(){
-                $("#addUser").dialog();
+                $("#addUser").dialog('open');
             }
              function eventDelete(){
                 $("#eventDeleter").dialog();
@@ -106,48 +103,73 @@
              }
             
             function viewEvents(month, daySend, year){
-                month = Number(month) + 1;
-                var events = year+"-"+month+"-"+daySend;
-                //php script called to get all events associated with user and date
+                //check if session login variable is set
+                console.log("global_username: " + global_username)
                 
-                $.ajax({
-                    'type' : "POST",
-                    'url' : "event_view.php",
-                    'data' : {
-                        'dateSent' : events,
-                    },
-                    
-                    'success' : function(data){
-                        document.getElementById(daySend).innerHTML = data;
-                        if(data != "You must log in to view events"){
-                            //var idreg = "\d+";
-                            //var id = data.match(idreg);
-                            $(".eventdisplay").click(function(data){
-                                //show event popout for editing/deleting when event is clicked
-                                var stuff = '<br><div>'+data+'</div><button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
-                                document.getElementById(daySend).innerHTML = stuff;
-                                $("#delete-button").on("click", eventDelete);
-                                $("#edit-button").on("click", eventEdit);
-                            }                     
-                            );
-                        }
-                        //send event id as json data
-                        //not working yet, want to display the event with buttons to edit or delete
-                        //https://forum.jquery.com/topic/hidden-value-in-a-ajax-data-response-in-html
-                        
-                    }
-                });
-                return false;
 
+                // console.log("user_login: " + user_login);
+
+                //if so, proceed to ajax query to get events for that day
+                if(global_username!=""){
+                    month = Number(month) + 1;
+                    var events = year+"-"+month+"-"+daySend;
+                    //php script called to get all events associated with user and date
+                    
+                    $.ajax({
+                        'type' : "POST",
+                        'url' : "event_view.php",
+                        'data' : {
+                            'dateSent' : events,
+                        },
+                        
+                        'success' : function(data){
+                            console.log("data: " + data);
+                            var jsondata = JSON.parse(data);
+                            var json_length = jsondata.length;
+                            var inner_length = 0;
+                            for (var i = 0; i<json_length; i++)
+                            {
+                                inner_length = jsondata[i].length;
+                                for( var j = 0; j<inner_length; j++ ){
+                                    console.log("jsondata: " + json_data[i][j]);
+                                    document.getElementById(daySend).innerHTML = jsondata.event_text;
+                                }
+                            }
+
+                            //document.getElementById(daySend).innerHTML = jsondata.event;
+
+                            // if(data != "You must log in to view events"){
+                            //     //var idreg = "\d+";
+                            //     //var id = data.match(idreg);
+                            //     $(".eventdisplay").click(function(data){
+                            //         //show event popout for editing/deleting when event is clicked
+                                    
+
+                            //         var stuff = '<br><div>'++'</div><button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
+                            //         document.getElementById(daySend).innerHTML = stuff;
+                            //         $("#delete-button").on("click", eventDelete);
+                            //         $("#edit-button").on("click", eventEdit);
+                            //     }                     
+                            //     );
+                            // }
+                            //send event id as json data
+                            //not working yet, want to display the event with buttons to edit or delete
+                            //https://forum.jquery.com/topic/hidden-value-in-a-ajax-data-response-in-html
+                            
+                        }
+                    });
+                    return false;
+                }
             }
             function loginUser(){
-                $("#loggerIn").dialog();
+                $("#loggerIn").dialog("open");
             }
             function logout(){
+                global_username="";
                 $.ajax({
                    'url' : "logout.php",
                    'success' : function(data){
-                     alert(data);
+                    alert(data);
                     console.log(data);
                     $("#logoutbutton").hide();
                     $("#eventAdder").hide();
@@ -180,10 +202,11 @@
                      'success': function(data) {
                         alert(data);
                         console.log(data);
-                         if (data == 'You have registered') {
-                             $("#register")[0].reset(); // reset form
-                             //document.getElementById("message").innerHTML="You successfully registered";
-                         }
+                        if (data == 'You have registered') {
+                            $("#register")[0].reset(); // reset form
+                            //document.getElementById("message").innerHTML="You successfully registered";
+                        }
+                        $("#addUser").dialog('close');
                      }
                  });
                 return false;
@@ -202,28 +225,24 @@
                         }
                     },
                     'success' : function(data){
-                    alert(data);
-                    console.log(data);
-                    if(data == "Login successful"){
-                        $("#logoutbutton").show();
-                        //check if session login variable is set, if so, then assign to title
-                        //<?php 
-                        //    $user;
-                        //    if(isset($_SESSION["login"])){
-                        //        $user = $_SESSION["login"];
-                        //    }else{
-                        //        $user="";
-                        //    }
-                        //?>;
-                        
-
-                        //logged in users can add events and don't need the register button
-                        $("#login").hide();
-                        $("#userAdder").hide();
-                        $("#eventAdder").show();
-                        firstCalendar();
-                        
-                    }
+                        var jsondata = JSON.parse(data)
+                        alert(jsondata.message);
+                        console.log(jsondata.message);
+                        console.log(jsondata.result);
+                        if(jsondata.result != ""){
+                            global_username = jsondata.result;
+                            global_token = jsondata.token;
+                            $("#logoutbutton").show();
+                            $("#login").hide();
+                            $("#userAdder").hide();
+                            $("#eventAdder").show();
+                            $("#logoutbutton").show();
+                            firstCalendar();
+                        }
+                        //close the window and wipe the form
+                        $("#loggerIn").dialog('close');
+                        $("#username").val("");
+                        $("#password").val("");
                     }
                 });
                 return false;
@@ -237,6 +256,7 @@
                     'success': function(data){
                         console.log(data);
                         alert(data);
+                        $("#addEventer").dialog('close');
                         firstCalendar();
                     }
                 });
@@ -245,6 +265,9 @@
 
             function event_delete(){
                 var data = $("#eventDelete1").serialize();
+                console.log("DATA:" + data);
+//ojnfpijbnqepijnbjqenf[vojnqe[onv[oeqnfv[oqen[oeqn[onqeojn]]]]]]    ------ended here.  Need to append the "data" string with the token by seeing how it prints out and then pass the whole thing to ajax/php and in php, compare the session_token with passed token
+                //data = data + global_token;
                 $.ajax({
                     'type': "POST",
                     'url': "event_delete.php",
@@ -435,8 +458,20 @@
             }
             //everything that loads upon page load
             function start() {
-                $("#eventAdder").hide();
-                $("#logoutbutton").hide();
+                //check for login and display appropriate buttons
+                
+                if(global_username != ""){
+                    $("#login").hide();
+                    $("#logoutbutton").show();
+                    $("#userAdder").hide();
+                    $("#eventAdder").show();
+                }
+                else{
+                    $("#login").show();
+                    $("#logoutbutton").hide();
+                    $("#userAdder").show();
+                    $("#eventAdder").hide();
+                }
                 
                 //listeners for the add event, user and login buttons
                 document.getElementById("eventAdder").addEventListener("click", addEvent, false);
@@ -444,18 +479,31 @@
                 document.getElementById("login").addEventListener("click", loginUser, false);
                 document.getElementById("logoutbutton").addEventListener("click", logout, false);
                 //jquery listeners for the add event and add user forms
+                
                 $("#addEvent").on("submit", function(event){
                     event.preventDefault();
                     eventAdder();
                 });
+                $('#addEventer').dialog({autoOpen: false});
+
                 $("#register").on("submit", function(event){
                     event.preventDefault();
                     userAdder();
                 });
+                $('#addUser').dialog({autoOpen: false});
+
                 $("#login-form").on("submit", function(event){
                     event.preventDefault();
                     userLogger();
                 });
+                $('#loggerIn').dialog({autoOpen: false});
+
+                $("#eventDel").on("submit", function(event){
+                    event.preventDefault();
+                    userLogger();
+                });
+                $('#eventDeleter').dialog({autoOpen: false});
+
                 firstCalendar();
                 //$("#registerSub").click(register);
             }
