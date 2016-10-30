@@ -1,5 +1,6 @@
 <?php
     session_start();
+    ini_set("session.cookie_httponly", 1);
     //echo "starting session" ;
     //display events on the date selected
     require 'database.php';

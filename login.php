@@ -32,6 +32,7 @@
     }
     if(password_verify($password_guess, $password_db)==$password_db){
         session_start();
+        ini_set("session.cookie_httponly", 1);
         $_SESSION['Login'] = $username_db;
         $token = substr(md5(rand()), 0, 10);
         $_SESSION['token'] = $token; // generate a 10-character random string

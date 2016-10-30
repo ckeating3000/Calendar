@@ -1,6 +1,7 @@
 <?php
 	require 'database.php';
 	session_start();
+	ini_set("session.cookie_httponly", 1);
 	//check for valid token created when user logs in
 	//if($_SESSION['token'] !== $_POST['token']){
 	//	die("Request forgery detected");

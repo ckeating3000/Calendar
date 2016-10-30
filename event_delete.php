@@ -29,7 +29,4 @@
 		echo $_SESSION['token'];
 		exit;
 	}
-
-	
-
 ?>

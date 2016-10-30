@@ -1,4 +1,3 @@
-
 <!DOCTYPE HTML>
 <html>
     <!-- this script inspired by www.htmlbestcodes.com-Coded by: Krishna Eydat -->
@@ -68,7 +67,6 @@
         <div id="addEventer" title="Event Add">
             <p>Add an event</p> 
             <form class="form" name="addEv" id="addEvent" action="#" method="POST">
-                <!--<input type="hidden" name="token" value="" />-->
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date"/> <br>
                 <label for="time">Time</label>
@@ -81,16 +79,15 @@
 
         <div id="eventEditer" title="Event Edit">
             <p>Edit an event</p> 
-            <form class="form" name="editEv" id="editEvent" action="#" method="POST">
-                <!--<input type="hidden" name="token" value="" />-->
-                <input type="hidden" id="edit_id" />  <!-- set value in callback function -->
-                <input type="hidden" id="edit_day" />  <!-- set value in callback function -->
+            <form class="form" name="editEv" id="editEventForm" action="#" method="POST">
+                <input type="hidden" id="edit_id" />  <!-- set value in function edit_dialog-->
+                <input type="hidden" id="old_day" />  <!-- set value in edit_dialog -->
                 <label for="date">Date</label>
-                <input type="date" id="date" name="date"/> <br>
+                <input type="date" id="edit_date" name="date"/> <br>
                 <label for="time">Time</label>
-                <input type="time" id="time" name="time"/> <br>
+                <input type="time" id="edit_time" name="time"/> <br>
                 <label for="eventTitle">Event Title</label>
-                <input type="text" id="eventTitle" name="eventTitle"/> <br>
+                <input type="text" id="edit_text" name="eventTitle"/> <br>
                 <input type=submit name="submit" value="submit" id="event_edit_submit"/>
             </form>
         </div>
@@ -100,8 +97,14 @@
             //add event dialogue
             var global_username="";
             var global_token="";
-
+            //from http://stackoverflow.com/questions/18020950/how-to-make-input-type-date-supported-on-all-browsers-any-alternatives
             function addEvent(){
+                if ($("#date").type!="date"){ //if browser doesn't support input type="date", initialize date picker widget:
+                       $('#date').datepicker();
+                }
+                if ($('#time').type === 'text') {
+                    $('#time').type = 'text';
+                }
                 $("#addEventer").dialog('open');
                 $("#addEvent").show();
             }
@@ -115,11 +118,21 @@
             //     //var edit_event_text = $("#daySend > jsondata.id > event_text").val()
             //     $("#eventDeleter").dialog('open');
             // }
-            function eventEdit(id, day){
-                console.log("addevent id: " + id);
-                console.log("addevent day: " + day);
-                $("#edit_id").val() = id;
-                $("#edit_day").val() = day;
+            function edit_dialog(id, day, time, date, text){
+                //from http://stackoverflow.com/questions/18020950/how-to-make-input-type-date-supported-on-all-browsers-any-alternatives
+                if ($("#edit_date").type!="date"){ //if browser doesn't support input type="date", initialize date picker widget:
+                       $('#edit_date').datepicker();
+                }
+                if ($('#edit_time').type === 'text') {
+                    $('#edit_time').type = 'text';
+                }
+
+                $("#edit_id").val(id);
+                $("#old_day").val(day);//original day
+                $("#edit_date").val(date); //whole date, including month and year
+                $("#edit_text").val(text);
+                $("#edit_time").val(time);
+                //$("#edit_day").val() = day; // user can change this
                 //$("#edit_token").val(global_token);
                 //$("#edit_event_id").val(eventid);
                 $("#eventEditer").dialog('open');
@@ -127,50 +140,56 @@
             
             function viewEvents(month, daySend, year){
                 //check if session login variable is set
-                console.log("global_username: " + global_username)
+                //console.log("global_username: " + global_username)
                 
                 //if so, proceed to ajax query to get events for that day
                 if(global_username!=""){
                     month = Number(month) + 1;
-                    var events = year+"-"+month+"-"+daySend;
+                    var year_month_day = year+"-"+month+"-"+daySend;
                     //php script called to get all events associated with user and date
                     
                     $.ajax({
                         'type' : "POST",
                         'url' : "event_view.php",
                         'data' : {
-                            'dateSent' : events,
+                            'dateSent' : year_month_day, // deleted comma after events
                         },
                         
                         'success' : function(data){
-                            console.log("rawdata: " + data);
+                            //console.log("rawdata: " + data);
 
                             //var obj = jQuery.parseJSON(data);
                             //console.log("obj.id: " + obj.id);
 
                             var jsondata = JSON.parse(data);
-
-                            console.log("jsondata: "+ jsondata);
-                            
                             var json_length = jsondata.length;
                             
                             if(json_length > 0){
-                                //var inner_length = 0;
-                                //var eventIDs=[];
-                                //var innerhtml=" ";
-                                // var eventTimes;
-                                // var eventTexts;
                                 for (var i = 0; i<json_length; i++)
                                 {
-                                    //eventIDs.push(jsondata[i].id);
+                                    //add events to the calendar
                                     document.getElementById(daySend).innerHTML += "<div id='" + jsondata[i].id + "'>" + "<div class='event_text'>" +  jsondata[i].event_text + "</div>"+  "<br> Time: "  + "<div class='event_time'>" + jsondata[i].time + "</div><br>";
-                                    //create edit and delete button for each event
 
-                                    var stuff = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button><button id="edit'+jsondata[i].id+'" onclick=eventEdit('+jsondata[i].id+','+daySend+')>Edit</button><br>';
-                                    //console.log("stuff = " + stuff);
-                                    document.getElementById(daySend).innerHTML += stuff;
+                                    //create edit and delete button for each event
+                                    var delete_button = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button>';
+                                    
+                                    var time = String(jsondata[i].time);
+                                    //console.log("time: "+ time);
+                                    var date = String(year_month_day);
+                                    //console.log("date: "+ date);
+                                    var text = jsondata[i].event_text;
+                                    var edit_button = '<br> <button id="edit'+jsondata[i].id+'" onClick="edit_dialog(\'' + jsondata[i].id + '\',\'' + daySend + '\',\'' + time + '\',\'' + date + '\',\'' + text + '\')">Edit</button>';
+                                    //var edit_button = '<br> <button id="edit'+jsondata[i].id+'" onclick="edit_dialog('+jsondata[i].id+','+daySend+','+time+','+date+')">Edit</button>';
+
+                                    // var stuff = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button><button id="edit'+jsondata[i].id+'" onclick="edit_dialog('+jsondata[i].id+','+daySend+','+jsondata[i].event_text+','+jsondata[i].time+','+year_month_day+')">Edit</button><br>';
+
+                                    console.log("edit button " + edit_button);
+                                    document.getElementById(daySend).innerHTML += delete_button;
+                                    document.getElementById(daySend).innerHTML += edit_button;
+
                                     var id = String(jsondata[i].id);
                                 }
+                                console.log("finished creating buttons");
                             }
                             // if(data != "You must log in to view events"){
                             //     //var idreg = "\d+";
@@ -300,7 +319,7 @@
                 var go_ahead = confirm("Are you sure you want to delete");
                 if(go_ahead){
                     //console.log("in eventdelete")
-                    var delete_event_text = $("#daySend > jsondata.id > event_text").val();
+                    //var delete_event_text = $("#daySend > jsondata.id > event_text").val();
                     
                     var data = {"id": id, "token": global_token};
                     //console.log("event id: " + id);
@@ -319,7 +338,10 @@
                                 console.log("#"+day+" > "+id);
                                 //console.log("day: " + $("#"+day).val());
                                 //console.log($("#"+day+" > "+id).val());
+                                //$("#"+day+" > "+id +" > event_text").remove();
+                                //$("#"+day+" > "+id +" > event_time").remove();
                                 $("#"+day+" > "+id).remove();
+                                firstCalendar();
                             }
                         }
                     });
@@ -327,38 +349,48 @@
                 }
             }
 
-            function eventEdit(id,day){
-                console.log("day: " + day);
-                var go_ahead = confirm("Are you sure you want to delete");
-                if(go_ahead){
-                    //console.log("in eventdelete")
-                    var delete_event_text = $("#daySend > jsondata.id > event_text").val();
-                    
-                    var data = {"id": id, "token": global_token};
-                    //console.log("event id: " + id);
-                    //var data = $("#eventDelete1").serialize();
-                    //console.log("DATA:" + data);
-    //ended here.  Need to append the "data" string with the token by seeing how it prints out and then pass the whole thing to ajax/php and in php, compare the session_token with passed token
-                    //data = data + global_token;
-                    $.ajax({
-                        'type': "POST",
-                        'url': "event_delete.php",
-                        'data' : data,
-                        'success': function(response){
-                            console.log("in response");
-                            console.log(response);
-                            if(response == "Content successfully deleted"){
-                                console.log("inside if");
-                                console.log("#"+day+" > "+id);
-                                //console.log("day: " + $("#"+day).val());
-                                //console.log($("#"+day+" > "+id).val());
-                                $("#"+day+" > "+id).remove();
+            function eventEdit(){
+                console.log("inside eventEdit");
+                var original_day = $("#old_day").val();
+                var id = $("#edit_id").val();
+                console.log("id: " + id);
+                console.log("original day: " + original_day);
+                var edit_event_text = $("#edit_text").val();
+                var edit_event_time = $("#edit_time").val();
+                var edit_event_date = $("#edit_date").val();
+                
+                var data = {"id": id, "token": global_token, "text": edit_event_text, "time": edit_event_time, "date": edit_event_date};
+                console.log("edit data: " + data);
+                //console.log("DATA:" + data);
+//ended here.  Need to append the "data" string with the token by seeing how it prints out and then pass the whole thing to ajax/php and in php, compare the session_token with passed token
+                //data = data + global_token;
+                $.ajax({
+                    'type': "POST",
+                    'url': "event_edit.php",
+                    'data' : data,
+                    'success': function(response){
+                        console.log("in response");
+                        console.log(response);
+                        if(response == "Content successfully changed"){
+                            $("#eventEditer").dialog('close');
+                            firstCalendar();
+                            //console.log("inside if");
+                            // first check to see if the event is inthe current month, if not, remove event
+                            // if it is in the current month, change the day property and so on.
+                            //$("#"+day+" > "+id+" > " + event_text).val(edit_event_text);// change day
+                            //$("#"+day+" > "+id+" > " + event_text).val(edit_event_text);// change text
+                            //$("#"+day+" > "+id+" > " + event_time).val(edit_event_time);// change time
 
-                            }
+                            //console.log("#"+day+" > "+id);
+                            //console.log("day: " + $("#"+day).val());
+                            //console.log($("#"+day+" > "+id).val());
+                            //$("#"+day+" > "+id).remove();
+
+                            //change day variable to new date and update the text, time, and date of the event in the calendar
                         }
-                    });
-                    return false;
-                }
+                    }
+                });
+                return false;
             }
 
             //checking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
@@ -575,7 +607,7 @@
                 });
                 $('#loggerIn').dialog({autoOpen: false});
 
-                $("#eventEdit").on("submit", function(event){
+                $("#editEventForm").on("submit", function(event){
                     event.preventDefault();
                     eventEdit();
                 });
