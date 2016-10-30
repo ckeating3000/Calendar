@@ -10,11 +10,11 @@
 	//start session
 	//$user = SESSION_["login"];
 	if(!isset($_SESSION['Login'])){
-		echo "You must log in to add events";
+		echo "You must log in to delete events";
 		exit;
 	}
-	$event = $_POST['eventTitle'];
-	$time = $_POST['time'];
+	$event_id = $_POST['id'];
+	$ = $_POST[''];
 	$date = $_POST['date'];
 	//check that date and time are properly formatted. Proper format automatic when inputting values using Chrome
 	// from http://stackoverflow.com/questions/13194322/php-regex-to-check-date-is-in-yyyy-mm-dd-format

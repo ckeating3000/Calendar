@@ -44,7 +44,7 @@
 
         <div id="loggerIn" title="User Login">
             <p>Login to add and view your events</p> 
-            <form name="login"  id="login-form" action="#" method="POST">
+            <form name="login" class="form" id="login-form" action="#" method="POST">
                 <!--form stores information about username and password-->
                 <label for="userName">Username</label>
                 <input type="text" id="username" name="username"><br>
@@ -58,8 +58,8 @@
             <p>Are you sure you want to delete this event?</p> 
             <form name="eventDelete1"  id="eventDel" action="#" method="POST">
                 <!--form stores information about username and password-->
-                <input type="hidden" name="token" value= />
-                <input type="hidden" name="token" value="<?php echo $token;?>" />
+                <input type="hidden" id="delete_token" />  <!-- set value in callback function -->
+                <input type="hidden" id="delete_event_id" />  <!-- set value in callback function -->
                 <input type="radio" id="yes"> Yes <br>
                 <input type="radio" id="no"> No <br>
                 <input type=submit name="Submit" value="Submit" id="delete_submit"/>
@@ -67,12 +67,10 @@
             </form>
         </div>
 
-
         <div id="addEventer" title="Event Add">
-            <form id="addEvent" action="#" method="post">
-                <!--date and time fields may not always be supported, consider one of these options or may want to figure out our own fields-->
-                
-                <input type="hidden" name="token" value= />
+            <p>Add an event</p> 
+            <form class="form" name="addEv" id="addEvent" action="#" method="POST">
+                <!--<input type="hidden" name="token" value="" />-->
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date"/> <br>
                 <label for="time">Time</label>
@@ -80,6 +78,22 @@
                 <label for="eventTitle">Event Title</label>
                 <input type="text" id="eventTitle" name="eventTitle"/> <br>
                 <input type=submit name="Submit" value="Submit" id="event_submit"/>
+            </form>
+        </div>
+
+        <div id="eventEditer" title="Event Edit">
+            <p>Edit an event</p> 
+            <form class="form" name="editEv" id="editEvent" action="#" method="POST">
+                <!--<input type="hidden" name="token" value="" />-->
+                <input type="hidden" id="edit_token" />  <!-- set value in callback function -->
+                <input type="hidden" id="edit_event_id" />  <!-- set value in callback function -->
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date"/> <br>
+                <label for="time">Time</label>
+                <input type="time" id="time" name="time"/> <br>
+                <label for="eventTitle">Event Title</label>
+                <input type="text" id="eventTitle" name="eventTitle"/> <br>
+                <input type=submit name="Submit" value="Submit" id="event_edit_submit"/>
             </form>
         </div>
         
@@ -91,24 +105,28 @@
 
             function addEvent(){
                 $("#addEventer").dialog('open');
+                $("#addEvent").show();
             }
             function addUser(){
                 $("#addUser").dialog('open');
+
             }
-             function eventDelete(){
-                $("#eventDeleter").dialog();
-             }
-             function eventEdit(){
+            function eventDelete(eventid){
+                $("#delete_token").val(global_token);
+                $("#delete_event_id").val(eventid);
+                //var edit_event_text = $("#daySend > jsondata.id > event_text").val()
+                $("#eventDeleter").dialog('open');
+            }
+            function eventEdit(){
+                $("#edit_token").val(global_token);
+                $("#edit_event_id").val(eventid);
                 alert("Where editing form will pop up");
-             }
+            }
             
             function viewEvents(month, daySend, year){
                 //check if session login variable is set
                 console.log("global_username: " + global_username)
                 
-
-                // console.log("user_login: " + user_login);
-
                 //if so, proceed to ajax query to get events for that day
                 if(global_username!=""){
                     month = Number(month) + 1;
@@ -123,17 +141,46 @@
                         },
                         
                         'success' : function(data){
-                            console.log("data: " + data);
+                            console.log("rawdata: " + data);
+
+                            //var obj = jQuery.parseJSON(data);
+                            //console.log("obj.id: " + obj.id);
+
                             var jsondata = JSON.parse(data);
+
+                            console.log("jsondata: "+ jsondata);
+                            
                             var json_length = jsondata.length;
-                            var inner_length = 0;
-                            for (var i = 0; i<json_length; i++)
-                            {
-                                inner_length = jsondata[i].length;
-                                for( var j = 0; j<inner_length; j++ ){
-                                    console.log("jsondata: " + json_data[i][j]);
-                                    document.getElementById(daySend).innerHTML = jsondata.event_text;
+                            
+                            if(json_length > 0){
+                                //var inner_length = 0;
+                                //var eventIDs=[];
+                                //var innerhtml=" ";
+                                // var eventTimes;
+                                // var eventTexts;
+                                for (var i = 0; i<json_length; i++)
+                                {
+                                    //eventIDs.push(jsondata[i].id);
+                                    document.getElementById(daySend).innerHTML += "<div id='" + jsondata[i].id + "'>" + "<div class='event_text'>" +  jsondata[i].event_text + "</div>"+  "<br> Time: "  + "<div class='event_time'>" + jsondata[i].time + "</div><br>";
+                                    //create edit and delete button for each event
+
+                                    var stuff = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button><button id="edit'+jsondata[i].id+'" onclick=eventEdit('+jsondata[i].id+','+daySend+')>Edit</button><br>';
+                                    
+                                    document.getElementById(daySend).innerHTML += stuff;
+                                    var id = String(jsondata[i].id);
+
+                                    //$("#delete"+id).on("click", event_delete);
+                                    
+                                    //$("#delete"+id).onclick=eventDelete;
+                                    //$("#edit"+id).onclick=eventEdit;
+
+                                    //$("#delete"+id).on("click", eventDelete);
+                                    //$("#edit"+id).on("click", eventEdit);
                                 }
+                                //console.log("final innerhtml: " + innerhtml);
+                                //console.log("eventIDs[0]: " + eventIDs[0]);
+
+                                
                             }
 
                             //document.getElementById(daySend).innerHTML = jsondata.event;
@@ -263,22 +310,31 @@
                 return false;
             }
 
-            function event_delete(){
-                var data = $("#eventDelete1").serialize();
-                console.log("DATA:" + data);
-//ojnfpijbnqepijnbjqenf[vojnqe[onv[oeqnfv[oqen[oeqn[onqeojn]]]]]]    ------ended here.  Need to append the "data" string with the token by seeing how it prints out and then pass the whole thing to ajax/php and in php, compare the session_token with passed token
-                //data = data + global_token;
-                $.ajax({
-                    'type': "POST",
-                    'url': "event_delete.php",
-                    'data' : data,
-                    'success': function(data){
-                        console.log(data);
-                        alert(data);
-                        firstCalendar();
-                    }
-                });
-                return false;
+            function event_delete(day, id){
+                var go_ahead = confirm("Are you sure you want to delete");
+                if(go_ahead){
+                    console.log("in eventdelete")
+                    var delete_event_text = $("#daySend > jsondata.id > event_text").val();
+                    
+                    var data = {"id": id, "token": global_token};
+                   
+                    //var data = $("#eventDelete1").serialize();
+                    console.log("DATA:" + data);
+    //ended here.  Need to append the "data" string with the token by seeing how it prints out and then pass the whole thing to ajax/php and in php, compare the session_token with passed token
+                    //data = data + global_token;
+                    $.ajax({
+                        'type': "POST",
+                        'url': "event_delete.php",
+                        'data' : data,
+                        'success': function(data){
+                            console.log(data);
+                            if(data = "success"){
+                                $("#"+day+" > "+id).remove();
+                            }
+                        }
+                    });
+                    return false;
+                }
             }
 
             //checking for leapyears to get days in february http://stackoverflow.com/questions/725098/leap-year-calculation
@@ -448,10 +504,7 @@
                 for(var k=0; k < daysInMonth; k++){
                     viewEvents(month, k+1, year);
                     var id = k+1;
-                    $("#"+id).click(function(event){
-                        alert("You must log in to view events");
-                    }
-                    );
+                    //$("#delete"+id).on("click", $("#eventDeleter").dialog('open'));
                 }
                 //$("td").on('click', viewEvents(month, $(this.target).val(), year));
                 //$("#calendar").on('click', '.btnSelect', viewEvents(month, year));
