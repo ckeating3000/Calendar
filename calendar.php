@@ -83,15 +83,15 @@
             <p>Edit an event</p> 
             <form class="form" name="editEv" id="editEvent" action="#" method="POST">
                 <!--<input type="hidden" name="token" value="" />-->
-                <input type="hidden" id="edit_token" />  <!-- set value in callback function -->
-                <input type="hidden" id="edit_event_id" />  <!-- set value in callback function -->
+                <input type="hidden" id="edit_id" />  <!-- set value in callback function -->
+                <input type="hidden" id="edit_day" />  <!-- set value in callback function -->
                 <label for="date">Date</label>
                 <input type="date" id="date" name="date"/> <br>
                 <label for="time">Time</label>
                 <input type="time" id="time" name="time"/> <br>
                 <label for="eventTitle">Event Title</label>
                 <input type="text" id="eventTitle" name="eventTitle"/> <br>
-                <input type=submit name="Submit" value="Submit" id="event_edit_submit"/>
+                <input type=submit name="submit" value="submit" id="event_edit_submit"/>
             </form>
         </div>
         
@@ -115,10 +115,14 @@
             //     //var edit_event_text = $("#daySend > jsondata.id > event_text").val()
             //     $("#eventDeleter").dialog('open');
             // }
-            function eventEdit(){
-                $("#edit_token").val(global_token);
-                $("#edit_event_id").val(eventid);
-                alert("Where editing form will pop up");
+            function eventEdit(id, day){
+                console.log("addevent id: " + id);
+                console.log("addevent day: " + day);
+                $("#edit_id").val() = id;
+                $("#edit_day").val() = day;
+                //$("#edit_token").val(global_token);
+                //$("#edit_event_id").val(eventid);
+                $("#eventEditer").dialog('open');
             }
             
             function viewEvents(month, daySend, year){
@@ -163,26 +167,11 @@
                                     //create edit and delete button for each event
 
                                     var stuff = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button><button id="edit'+jsondata[i].id+'" onclick=eventEdit('+jsondata[i].id+','+daySend+')>Edit</button><br>';
-                                    
+                                    //console.log("stuff = " + stuff);
                                     document.getElementById(daySend).innerHTML += stuff;
                                     var id = String(jsondata[i].id);
-
-                                    //$("#delete"+id).on("click", event_delete);
-                                    
-                                    //$("#delete"+id).onclick=eventDelete;
-                                    //$("#edit"+id).onclick=eventEdit;
-
-                                    //$("#delete"+id).on("click", eventDelete);
-                                    //$("#edit"+id).on("click", eventEdit);
                                 }
-                                //console.log("final innerhtml: " + innerhtml);
-                                //console.log("eventIDs[0]: " + eventIDs[0]);
-
-                                
                             }
-
-                            //document.getElementById(daySend).innerHTML = jsondata.event;
-
                             // if(data != "You must log in to view events"){
                             //     //var idreg = "\d+";
                             //     //var id = data.match(idreg);
@@ -197,10 +186,8 @@
                             //     }                     
                             //     );
                             // }
-                            //send event id as json data
                             //not working yet, want to display the event with buttons to edit or delete
-                            //https://forum.jquery.com/topic/hidden-value-in-a-ajax-data-response-in-html
-                            
+                            //https://forum.jquery.com/topic/hidden-value-in-a-ajax-data-response-in-html  
                         }
                     });
                     return false;
@@ -225,7 +212,6 @@
                    }
                 });
                 return false;
-                
             }
             //adapted from https://www.formget.com/jquery-registration-form/
             function userAdder(){
@@ -310,6 +296,39 @@
             }
 
             function event_delete(id,day){
+                console.log("day: " + day);
+                var go_ahead = confirm("Are you sure you want to delete");
+                if(go_ahead){
+                    //console.log("in eventdelete")
+                    var delete_event_text = $("#daySend > jsondata.id > event_text").val();
+                    
+                    var data = {"id": id, "token": global_token};
+                    //console.log("event id: " + id);
+                    //var data = $("#eventDelete1").serialize();
+                    //console.log("DATA:" + data);
+                    //data = data + global_token;
+                    $.ajax({
+                        'type': "POST",
+                        'url': "event_delete.php",
+                        'data' : data,
+                        'success': function(response){
+                            console.log("in response");
+                            console.log(response);
+                            if(response == "Content successfully deleted"){
+                                console.log("inside if");
+                                console.log("#"+day+" > "+id);
+                                //console.log("day: " + $("#"+day).val());
+                                //console.log($("#"+day+" > "+id).val());
+                                $("#"+day+" > "+id).remove();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+
+            function eventEdit(id,day){
+                console.log("day: " + day);
                 var go_ahead = confirm("Are you sure you want to delete");
                 if(go_ahead){
                     //console.log("in eventdelete")
@@ -331,8 +350,8 @@
                             if(response == "Content successfully deleted"){
                                 console.log("inside if");
                                 console.log("#"+day+" > "+id);
-                                console.log("day: " + $("#"+day).val());
-                                console.log($("#"+day+" > "+id).val());
+                                //console.log("day: " + $("#"+day).val());
+                                //console.log($("#"+day+" > "+id).val());
                                 $("#"+day+" > "+id).remove();
 
                             }
@@ -556,11 +575,11 @@
                 });
                 $('#loggerIn').dialog({autoOpen: false});
 
-                $("#eventDel").on("submit", function(event){
+                $("#eventEdit").on("submit", function(event){
                     event.preventDefault();
-                    userLogger();
+                    eventEdit();
                 });
-                $('#eventDeleter').dialog({autoOpen: false});
+                $('#eventEditer').dialog({autoOpen: false});
 
                 firstCalendar();
                 //$("#registerSub").click(register);
@@ -578,6 +597,5 @@
         //});
         </script>
         
-
     </body>
 </html>
