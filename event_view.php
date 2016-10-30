@@ -9,7 +9,7 @@
         exit;
     }
     else{
-        $user = $_SESSION['Login'];
+        $user = htmlentities($_SESSION['Login']);
         $date = $_POST['dateSent']; // 2016-06-04
         //get all events for a user
         $get_events = $mysqli->prepare("select time, event_text, event_id from events where username=? and date=? order by time");
@@ -34,9 +34,9 @@
         while($get_events->fetch()){
             
             array_push($response_array, array(
-                "id" => $id,
-                "time" => $times,
-                "event_text" => $events
+                "id" => htmlspecialchars($id),
+                "time" => htmlspecialchars($times),
+                "event_text" => htmlspecialchars($events)
                 ));
 
 

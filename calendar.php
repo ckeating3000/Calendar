@@ -51,19 +51,6 @@
             </form>
         </div>
 
-        <!-- <div id="eventDeleter" title="Delete Event">
-            <p>Are you sure you want to delete this event?</p> 
-            <form name="eventDelete1"  id="eventDel" action="#" method="POST">
-                
-                <input type="hidden" id="delete_token" />  
-                <input type="hidden" id="delete_event_id" />  
-                <input type="radio" id="yes"> Yes <br>
-                <input type="radio" id="no"> No <br>
-                <input type=submit name="Submit" value="Submit" id="delete_submit"/>
-                
-            </form>
-        </div> -->
-
         <div id="addEventer" title="Event Add">
             <p>Add an event</p> 
             <form class="form" name="addEv" id="addEvent" action="#" method="POST">
@@ -97,14 +84,8 @@
             //add event dialogue
             var global_username="";
             var global_token="";
-            //from http://stackoverflow.com/questions/18020950/how-to-make-input-type-date-supported-on-all-browsers-any-alternatives
+
             function addEvent(){
-                if ($("#date").type!="date"){ //if browser doesn't support input type="date", initialize date picker widget:
-                       $('#date').datepicker();
-                }
-                if ($('#time').type === 'text') {
-                    $('#time').type = 'text';
-                }
                 $("#addEventer").dialog('open');
                 $("#addEvent").show();
             }
@@ -119,14 +100,6 @@
             //     $("#eventDeleter").dialog('open');
             // }
             function edit_dialog(id, day, time, date, text){
-                //from http://stackoverflow.com/questions/18020950/how-to-make-input-type-date-supported-on-all-browsers-any-alternatives
-                if ($("#edit_date").type!="date"){ //if browser doesn't support input type="date", initialize date picker widget:
-                       $('#edit_date').datepicker();
-                }
-                if ($('#edit_time').type === 'text') {
-                    $('#edit_time').type = 'text';
-                }
-
                 $("#edit_id").val(id);
                 $("#old_day").val(day);//original day
                 $("#edit_date").val(date); //whole date, including month and year
@@ -145,7 +118,14 @@
                 //if so, proceed to ajax query to get events for that day
                 if(global_username!=""){
                     month = Number(month) + 1;
-                    var year_month_day = year+"-"+month+"-"+daySend;
+                    var string_day="";
+                    //console.log("daysend:" + daySend);
+                    if(daySend < 10){
+                        string_day += ("0"+ String(daySend));
+                    }
+                    //console.log("stirngday:" + string_day);
+
+                    var year_month_day = year+"-"+month+"-"+string_day;
                     //php script called to get all events associated with user and date
                     
                     $.ajax({
@@ -156,7 +136,7 @@
                         },
                         
                         'success' : function(data){
-                            //console.log("rawdata: " + data);
+                            console.log("rawdata: " + data);
 
                             //var obj = jQuery.parseJSON(data);
                             //console.log("obj.id: " + obj.id);
@@ -191,22 +171,6 @@
                                 }
                                 console.log("finished creating buttons");
                             }
-                            // if(data != "You must log in to view events"){
-                            //     //var idreg = "\d+";
-                            //     //var id = data.match(idreg);
-                            //     $(".eventdisplay").click(function(data){
-                            //         //show event popout for editing/deleting when event is clicked
-                                    
-
-                            //         var stuff = '<br><div>'++'</div><button id="delete-button">Delete</button><button id="edit-button">Edit</button>';
-                            //         document.getElementById(daySend).innerHTML = stuff;
-                            //         $("#delete-button").on("click", eventDelete);
-                            //         $("#edit-button").on("click", eventEdit);
-                            //     }                     
-                            //     );
-                            // }
-                            //not working yet, want to display the event with buttons to edit or delete
-                            //https://forum.jquery.com/topic/hidden-value-in-a-ajax-data-response-in-html  
                         }
                     });
                     return false;
