@@ -1,8 +1,6 @@
 
 <!DOCTYPE HTML>
 <html>
-    <?php session_start(); ?>
-
     <!-- this script inspired by www.htmlbestcodes.com-Coded by: Krishna Eydat -->
     <head>
         <title>Calendar</title>
@@ -54,18 +52,18 @@
             </form>
         </div>
 
-        <div id="eventDeleter" title="Delete Event">
+        <!-- <div id="eventDeleter" title="Delete Event">
             <p>Are you sure you want to delete this event?</p> 
             <form name="eventDelete1"  id="eventDel" action="#" method="POST">
-                <!--form stores information about username and password-->
-                <input type="hidden" id="delete_token" />  <!-- set value in callback function -->
-                <input type="hidden" id="delete_event_id" />  <!-- set value in callback function -->
+                
+                <input type="hidden" id="delete_token" />  
+                <input type="hidden" id="delete_event_id" />  
                 <input type="radio" id="yes"> Yes <br>
                 <input type="radio" id="no"> No <br>
                 <input type=submit name="Submit" value="Submit" id="delete_submit"/>
-                <!-- need to include hidden inputs for user, date, time, event --> 
+                
             </form>
-        </div>
+        </div> -->
 
         <div id="addEventer" title="Event Add">
             <p>Add an event</p> 
@@ -111,12 +109,12 @@
                 $("#addUser").dialog('open');
 
             }
-            function eventDelete(eventid){
-                $("#delete_token").val(global_token);
-                $("#delete_event_id").val(eventid);
-                //var edit_event_text = $("#daySend > jsondata.id > event_text").val()
-                $("#eventDeleter").dialog('open');
-            }
+            // function eventDelete(eventid){
+            //     $("#delete_token").val(global_token);
+            //     $("#delete_event_id").val(eventid);
+            //     //var edit_event_text = $("#daySend > jsondata.id > event_text").val()
+            //     $("#eventDeleter").dialog('open');
+            // }
             function eventEdit(){
                 $("#edit_token").val(global_token);
                 $("#edit_event_id").val(eventid);
@@ -279,6 +277,7 @@
                         if(jsondata.result != ""){
                             global_username = jsondata.result;
                             global_token = jsondata.token;
+                            console.log("at login: " + global_token);
                             $("#logoutbutton").show();
                             $("#login").hide();
                             $("#userAdder").hide();
@@ -310,26 +309,32 @@
                 return false;
             }
 
-            function event_delete(day, id){
+            function event_delete(id,day){
                 var go_ahead = confirm("Are you sure you want to delete");
                 if(go_ahead){
-                    console.log("in eventdelete")
+                    //console.log("in eventdelete")
                     var delete_event_text = $("#daySend > jsondata.id > event_text").val();
                     
                     var data = {"id": id, "token": global_token};
-                   
+                    //console.log("event id: " + id);
                     //var data = $("#eventDelete1").serialize();
-                    console.log("DATA:" + data);
+                    //console.log("DATA:" + data);
     //ended here.  Need to append the "data" string with the token by seeing how it prints out and then pass the whole thing to ajax/php and in php, compare the session_token with passed token
                     //data = data + global_token;
                     $.ajax({
                         'type': "POST",
                         'url': "event_delete.php",
                         'data' : data,
-                        'success': function(data){
-                            console.log(data);
-                            if(data = "success"){
+                        'success': function(response){
+                            console.log("in response");
+                            console.log(response);
+                            if(response == "Content successfully deleted"){
+                                console.log("inside if");
+                                console.log("#"+day+" > "+id);
+                                console.log("day: " + $("#"+day).val());
+                                console.log($("#"+day+" > "+id).val());
                                 $("#"+day+" > "+id).remove();
+
                             }
                         }
                     });

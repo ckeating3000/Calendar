@@ -1,7 +1,6 @@
 <?php
 	// destroy any previous sessions
-    session_start();
-    session_destroy();
+
     require 'database.php';
 	
     $username=$_POST['username'];
@@ -34,8 +33,8 @@
     if(password_verify($password_guess, $password_db)==$password_db){
         session_start();
         $_SESSION['Login'] = $username_db;
-        $_SESSION['token'] = substr(md5(rand()), 0, 10); // generate a 10-character random string
         $token = substr(md5(rand()), 0, 10);
+        $_SESSION['token'] = $token; // generate a 10-character random string
         $result = array(
             "result"=>$username_db,
             "token"=>$token,
