@@ -22,6 +22,7 @@
         <button id="login">Login</button>
         <button id="userAdder">Register</button>
         <button id="logoutbutton">Logout</button>
+        <button id="sharecalbutton">Share</button>
         <div id="indevent"></div>
         <!--where the calendar will print out-->
         <p id="calSpot"> </p>
@@ -78,6 +79,25 @@
                 <input type=submit name="submit" value="submit" id="event_edit_submit"/>
             </form>
         </div>
+
+        <div id="shareCalendar" title="Share Calendar">
+            <p>Share with another user</p> 
+            <form class="form" name="share" id="shareCal" action="#" method="POST">
+                <label for="user">Enter user to share your events with</label>
+                <input type="text" id="user_to_share_cal" name="other_cal_user"/> <br>
+                <input type=submit name="submit" value="submit" id="share_cal_submit"/>
+            </form>
+        </div>
+
+         <div id="shareEvent" title="Share Event">
+            <p>Share with another user</p> 
+            <form class="form" name="share" id="shareEv" action="#" method="POST">
+                <input type="hidden" id="event_share_id" />
+                <label for="user">Enter user to share your event with</label>
+                <input type="text" id="user_to_share_ev" name="other_ev_user"/> <br>
+                <input type=submit name="submit" value="submit" id="share_ev_submit"/>
+            </form>
+        </div>
         
         <script>
         //$('document').ready(function(){    
@@ -91,7 +111,15 @@
             }
             function addUser(){
                 $("#addUser").dialog('open');
-
+            }
+            function shareCalDialog(){
+                console.log("inside share cal dialog");
+                $("#shareCalendar").dialog('open');
+            }
+            function shareEvDialog(event_id){
+                console.log("inside share event dialog");
+                $("#event_share_id").val(event_id);
+                $("#shareEvent").dialog('open');
             }
             // function eventDelete(eventid){
             //     $("#delete_token").val(global_token);
@@ -120,8 +148,12 @@
                     month = Number(month) + 1;
                     var string_day="";
                     //console.log("daysend:" + daySend);
+                    
                     if(daySend < 10){
                         string_day += ("0"+ String(daySend));
+                    }
+                    else{
+                        string_day+=String(daySend);
                     }
                     //console.log("stirngday:" + string_day);
 
@@ -148,7 +180,7 @@
                                 for (var i = 0; i<json_length; i++)
                                 {
                                     //add events to the calendar
-                                    document.getElementById(daySend).innerHTML += "<div id='" + jsondata[i].id + "'>" + "<div class='event_text'>" +  jsondata[i].event_text + "</div>"+  "<br> Time: "  + "<div class='event_time'>" + jsondata[i].time + "</div><br>";
+                                    document.getElementById(daySend).innerHTML += "<div id='" + jsondata[i].id + "'>" + "<div class='event_text'>" +  jsondata[i].event_text + "</div>"+  "<br> Time: "  + "<div class='event_time'>" + jsondata[i].time + "</div>";
 
                                     //create edit and delete button for each event
                                     var delete_button = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button>';
@@ -159,6 +191,8 @@
                                     //console.log("date: "+ date);
                                     var text = jsondata[i].event_text;
                                     var edit_button = '<br> <button id="edit'+jsondata[i].id+'" onClick="edit_dialog(\'' + jsondata[i].id + '\',\'' + daySend + '\',\'' + time + '\',\'' + date + '\',\'' + text + '\')">Edit</button>';
+
+                                    var share_button = '<br> <button id="share_ev'+jsondata[i].id+'" onClick="shareEvDialog(\'' + jsondata[i].id + '\')">Share</button>';
                                     //var edit_button = '<br> <button id="edit'+jsondata[i].id+'" onclick="edit_dialog('+jsondata[i].id+','+daySend+','+time+','+date+')">Edit</button>';
 
                                     // var stuff = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button><button id="edit'+jsondata[i].id+'" onclick="edit_dialog('+jsondata[i].id+','+daySend+','+jsondata[i].event_text+','+jsondata[i].time+','+year_month_day+')">Edit</button><br>';
@@ -166,6 +200,7 @@
                                     console.log("edit button " + edit_button);
                                     document.getElementById(daySend).innerHTML += delete_button;
                                     document.getElementById(daySend).innerHTML += edit_button;
+                                    document.getElementById(daySend).innerHTML += share_button;
 
                                     var id = String(jsondata[i].id);
                                 }
@@ -252,6 +287,7 @@
                             $("#userAdder").hide();
                             $("#eventAdder").show();
                             $("#logoutbutton").show();
+                            $("#sharecalbutton").show();
                             firstCalendar();
                         }
                         //close the window and wipe the form
@@ -306,6 +342,62 @@
                                 //$("#"+day+" > "+id +" > event_time").remove();
                                 $("#"+day+" > "+id).remove();
                                 firstCalendar();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+
+            function share_calendar(){
+                console.log("inside share cal function");
+                var other_user = $("#user_to_share_cal").val();
+                console.log("other calendar user: " + other_user);
+
+                var go_ahead = confirm("Are you sure you want to share all your events with " + other_user + "?");
+                if(go_ahead){
+                    var data = {"other_user": other_user, "token": global_token};
+                    $.ajax({
+                        'type': "POST",
+                        'url': "calendar_share.php",
+                        'data' : data,
+                        'success': function(response){
+                            console.log("in response");
+                            console.log(response);
+                            if(response == "Calendar successfully shared"){
+                                $("#shareCalendar").dialog('close');
+                                alert("Calendar successfully shared");
+                                console.log("inside if");
+                                //firstCalendar();
+                            }
+                        }
+                    });
+                    return false;
+                }
+            }
+
+            function share_event(){
+                console.log("inside share event function");
+                var other_user_event = $("#user_to_share_ev").val();
+                console.log("other event user: " + other_user_event);
+
+                var go_ahead = confirm("Are you sure you want to share this event with " + other_user_event + "?");
+                if(go_ahead){
+                    
+                    var data = {"other_user": other_user_event, "token": global_token};
+                    
+                    $.ajax({
+                        'type': "POST",
+                        'url': "event_share.php",
+                        'data' : data,
+                        'success': function(response){
+                            console.log("in response");
+                            console.log(response);
+                            if(response == "Event successfully shared"){
+                                $("#shareEvent").dialog('close');
+                                alert("Event successfully shared");
+                                console.log("inside if");
+                                //firstCalendar();
                             }
                         }
                     });
@@ -396,8 +488,7 @@
                     advMonth = 11;
                     advYear = advYear -1;
                     displayCalendar(advMonth, advYear); 
-                }
-                
+                }  
             }
             function nextMonth(){
                 if(advMonth < 11){
@@ -409,7 +500,6 @@
                     advYear = advYear +1;
                     displayCalendar(advMonth, advYear);
                 }
-                
             }
             
             //load other months
@@ -538,12 +628,14 @@
                     $("#logoutbutton").show();
                     $("#userAdder").hide();
                     $("#eventAdder").show();
+                    $("#sharecalbutton").show();
                 }
                 else{
                     $("#login").show();
                     $("#logoutbutton").hide();
                     $("#userAdder").show();
                     $("#eventAdder").hide();
+                    $("#sharecalbutton").hide();
                 }
                 
                 //listeners for the add event, user and login buttons
@@ -551,6 +643,7 @@
                 document.getElementById("userAdder").addEventListener("click", addUser, false);
                 document.getElementById("login").addEventListener("click", loginUser, false);
                 document.getElementById("logoutbutton").addEventListener("click", logout, false);
+                document.getElementById("sharecalbutton").addEventListener("click", shareCalDialog, false);
                 //jquery listeners for the add event and add user forms
                 
                 $("#addEvent").on("submit", function(event){
@@ -576,6 +669,18 @@
                     eventEdit();
                 });
                 $('#eventEditer').dialog({autoOpen: false});
+
+                $("#shareCal").on("submit", function(event){
+                    event.preventDefault();
+                    share_calendar();
+                });
+                $('#shareCalendar').dialog({autoOpen: false});
+
+                $("#shareEv").on("submit", function(event){
+                    event.preventDefault();
+                    share_event();
+                });
+                $('#shareEvent').dialog({autoOpen: false});
 
                 firstCalendar();
                 //$("#registerSub").click(register);
