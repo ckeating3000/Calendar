@@ -193,10 +193,10 @@
                                 for (var i = 0; i<json_length; i++)
                                 {
                                     //add events to the calendar
-                                    document.getElementById(daySend).innerHTML += "<div id='" + jsondata[i].id + "'>" + "<div class='event_text'>" +  jsondata[i].event_text + "</div>"+  "<br> Time: "  + "<div class='event_time'>" + jsondata[i].time + "</div>" + "<br> Tag: <div class='event_tag'>" + jsondata[i].event_tag + "</div>";
+                                    document.getElementById(daySend).innerHTML += "<div id='" + jsondata[i].id + "'>" + "<div class='event_time'>" +  jsondata[i].time + "</div>" + "<div class='event_text'>" + jsondata[i].event_text + "</div>" + "Tag: <div class='event_tag'>" + jsondata[i].event_tag + "</div>";
 
                                     //create edit and delete button for each event
-                                    var delete_button = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button>';
+                                    var delete_button = '<button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button>';
                                     
                                     var time = String(jsondata[i].time);
                                     //console.log("time: "+ time);
