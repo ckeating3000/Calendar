@@ -14,6 +14,7 @@ td{
     text-align: left;
     vertical-align: top;
     border-collapse: collapse;
+    font-size: 20px;
 }
 button{
     background: Azure;
@@ -24,7 +25,7 @@ button{
 
 button:hover {
     background-color: White; 
-    padding: 10px 24px;
+    padding: 10px 10px;
     border-radius: 12px;
     display: inline-block;
 }
@@ -37,13 +38,7 @@ button:hover {
 #addUser {
     display: none;
 }
-/*#loggerIn {
-    display: none;
-}*/
 th{
-    font-size: 20px;
-}
-td{
     font-size: 20px;
 }
 .eventdisplay {
@@ -52,5 +47,9 @@ td{
 .hide {
     font-size: 12px;
     color: LightSkyBlue;
+}
+.event_text{
+    font-size: 12px;
+    
 }
 /*http://stackoverflow.com/questions/18147887/html-layout-adding-sidebar-column-to-existing-site popout for event view*/

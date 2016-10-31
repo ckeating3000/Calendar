@@ -711,7 +711,7 @@
                 document.getElementById("nextMonth").addEventListener("click", nextMonth, false);
             }
 
-        //});
+       
         </script>
         
     </body>
