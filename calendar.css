@@ -18,7 +18,7 @@ td{
 }
 button{
     background: Azure;
-    padding: 10px 24px;
+    padding: 10px 10px;
     border-radius: 12px;
     display: inline-block;
 }
@@ -50,6 +50,11 @@ th{
 }
 .event_text{
     font-size: 12px;
-    
+}
+.event_time{
+    font-size: 12px;
+}
+.event_tag{
+    font-size: 12px;
 }
 /*http://stackoverflow.com/questions/18147887/html-layout-adding-sidebar-column-to-existing-site popout for event view*/
