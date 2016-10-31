@@ -12,14 +12,14 @@
         $user = htmlentities($_SESSION['Login']);
         $date = $_POST['dateSent']; // 2016-06-04
     //this query gets all events for current user
-        $get_events = $mysqli->prepare("select time, event_text, event_id from events where username=? and date=? order by time");
+        $get_events = $mysqli->prepare("select time, event_text, event_id ,tag from events where username=? and date=? order by time");
         if(!$get_events){
             printf("Query Prep Failed: %s\n", $mysqli->error);
             exit;
         }
         $get_events->bind_param('ss', $user, $date);
         $get_events->execute();
-        $get_events->bind_result($times, $events, $id);
+        $get_events->bind_result($times, $events, $id, $tag);
 
         $response_array = array();
         
@@ -27,7 +27,8 @@
             array_push($response_array, array(
                 "id" => htmlspecialchars($id),
                 "time" => htmlspecialchars($times),
-                "event_text" => htmlspecialchars($events)
+                "event_text" => htmlspecialchars($events),
+                "event_tag" => htmlspecialchars($tag)
                 ));   
         }
         $get_events->close();
@@ -35,7 +36,7 @@
 
 // (for event sharing)
     // this query selects all events and looks through the other_event_users string to see if that event is shared with the current user
-        $get_more_events = $mysqli->prepare("select `time`, `event_text`, `event_id`, `other_event_users` from `events` where `date`=? order by `time`");
+        $get_more_events = $mysqli->prepare("select `time`, `event_text`, `event_id`, `other_event_users`, `tag` from `events` where `date`=? order by `time`");
         if(!$get_more_events){
             printf("Query Prep Failed: %s\n", $mysqli->error);
             exit;
@@ -43,14 +44,15 @@
         $contain_user = "%"+$user+"%";
         $get_more_events->bind_param('s', $date);
         $get_more_events->execute();
-        $get_more_events->bind_result($times2, $events2, $id2, $otherusers);
+        $get_more_events->bind_result($times2, $events2, $id2, $otherusers, $tag2);
         
         while($get_more_events->fetch()){
             if (strpos($otherusers, $user) !== false) {
                 array_push($response_array, array(
                     "id" => htmlspecialchars($id2),
                     "time" => htmlspecialchars($times2),
-                    "event_text" => htmlspecialchars($events2)
+                    "event_text" => htmlspecialchars($events2),
+                    "event_tag" => htmlspecialchars($tag2)
                     )); 
             }
         }
@@ -98,7 +100,7 @@
 
         // then for each other user the cal is shared with, get all events for that day
         for ($i=0; $i < sizeof($final_others); $i++) {    
-            $get_even_more_events = $mysqli->prepare("select `time`, `event_text`, `event_id` from `events` where `date`=? and `username`=? order by `time`");
+            $get_even_more_events = $mysqli->prepare("select `time`, `event_text`, `event_id`, `tag` from `events` where `date`=? and `username`=? order by `time`");
             if(!$get_even_more_events){
                 printf("Query Prep Failed: %s\n", $mysqli->error);
                 exit;
@@ -106,13 +108,14 @@
             $contain_user = "%"+$user+"%";
             $get_even_more_events->bind_param('ss', $date, $final_others[$i]);
             $get_even_more_events->execute();
-            $get_even_more_events->bind_result($times3, $events3, $id3);
+            $get_even_more_events->bind_result($times3, $events3, $id3, $tag3);
             
             while($get_even_more_events->fetch()){
                 array_push($response_array, array(
                     "id" => htmlspecialchars($id3),
                     "time" => htmlspecialchars($times3),
-                    "event_text" => htmlspecialchars($events3)
+                    "event_text" => htmlspecialchars($events3),
+                    "event_tag" => htmlspecialchars($tag3)
                     ));
             }
             $get_even_more_events->close();

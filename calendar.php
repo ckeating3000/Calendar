@@ -22,7 +22,7 @@
         <button id="login">Login</button>
         <button id="userAdder">Register</button>
         <button id="logoutbutton">Logout</button>
-        <button id="sharecalbutton">Share</button>
+        <button id="sharecalbutton">Share Calendar</button>
         <div id="indevent"></div>
         <!--where the calendar will print out-->
         <p id="calSpot"> </p>
@@ -61,6 +61,9 @@
                 <input type="time" id="time" name="time"/> <br>
                 <label for="eventTitle">Event Title</label>
                 <input type="text" id="eventTitle" name="eventTitle"/> <br>
+                <input type="radio" name="tag" id="hometag" value="home" checked> Home<br>
+                <input type="radio" name="tag" id="worktag" value="work"> Work<br>
+                <input type="radio" name="tag" id="othertag" value="other"> Other<br>
                 <input type=submit name="Submit" value="Submit" id="event_submit"/>
             </form>
         </div>
@@ -76,6 +79,9 @@
                 <input type="time" id="edit_time" name="time"/> <br>
                 <label for="eventTitle">Event Title</label>
                 <input type="text" id="edit_text" name="eventTitle"/> <br>
+                <input type="radio" name="edittag" id="edit_hometag" value="home"> Home<br>
+                <input type="radio" name="edittag" id="edit_worktag" value="work"> Work<br>
+                <input type="radio" name="edittag" id="edit_othertag" value="other"> Other<br>
                 <input type=submit name="submit" value="submit" id="event_edit_submit"/>
             </form>
         </div>
@@ -133,6 +139,7 @@
                 $("#edit_date").val(date); //whole date, including month and year
                 $("#edit_text").val(text);
                 $("#edit_time").val(time);
+                //$("#edit_time").val(time);
                 //$("#edit_day").val() = day; // user can change this
                 //$("#edit_token").val(global_token);
                 //$("#edit_event_id").val(eventid);
@@ -174,7 +181,7 @@
                         },
                         
                         'success' : function(data){
-                            //console.log("rawdata: " + data);
+                            console.log("rawdata: " + data);
 
                             //var obj = jQuery.parseJSON(data);
                             //console.log("obj.id: " + obj.id);
@@ -186,7 +193,7 @@
                                 for (var i = 0; i<json_length; i++)
                                 {
                                     //add events to the calendar
-                                    document.getElementById(daySend).innerHTML += "<div id='" + jsondata[i].id + "'>" + "<div class='event_text'>" +  jsondata[i].event_text + "</div>"+  "<br> Time: "  + "<div class='event_time'>" + jsondata[i].time + "</div>";
+                                    document.getElementById(daySend).innerHTML += "<div id='" + jsondata[i].id + "'>" + "<div class='event_text'>" +  jsondata[i].event_text + "</div>"+  "<br> Time: "  + "<div class='event_time'>" + jsondata[i].time + "</div>" + "<br> Tag: <div class='event_tag'>" + jsondata[i].event_tag + "</div>";
 
                                     //create edit and delete button for each event
                                     var delete_button = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button>';
@@ -198,7 +205,7 @@
                                     var text = jsondata[i].event_text;
                                     var edit_button = '<br> <button id="edit'+jsondata[i].id+'" onClick="edit_dialog(\'' + jsondata[i].id + '\',\'' + daySend + '\',\'' + time + '\',\'' + date + '\',\'' + text + '\')">Edit</button>';
 
-                                    var share_button = '<br> <button id="share_ev'+jsondata[i].id+'" onClick="shareEvDialog(\'' + jsondata[i].id + '\')">Share</button>';
+                                    var share_button = '<br> <button id="share_ev'+jsondata[i].id+'" onClick="shareEvDialog(\'' + jsondata[i].id + '\')">Share Event</button>';
                                     //var edit_button = '<br> <button id="edit'+jsondata[i].id+'" onclick="edit_dialog('+jsondata[i].id+','+daySend+','+time+','+date+')">Edit</button>';
 
                                     // var stuff = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button><button id="edit'+jsondata[i].id+'" onclick="edit_dialog('+jsondata[i].id+','+daySend+','+jsondata[i].event_text+','+jsondata[i].time+','+year_month_day+')">Edit</button><br>';
@@ -304,7 +311,11 @@
                 return false;
             }
             function eventAdder(){
-                var data = $("#addEvent").serialize();
+                var date = $("#date").val();
+                var time = $("#time").val();
+                var evTitle = $("#eventTitle").val();
+                var tag_name = $('input[name="tag"]:checked').val();
+                var data = {"token": global_token, "date": date, "time": time, "eventTitle": evTitle, "tag": tag_name};
                 $.ajax({
                     'type': "POST",
                     'url': "event_add.php",
@@ -414,16 +425,20 @@
 
             function eventEdit(){
                 console.log("inside eventEdit");
-                var original_day = $("#old_day").val();
+                //var original_day = $("#old_day").val();
                 var id = $("#edit_id").val();
                 console.log("id: " + id);
-                console.log("original day: " + original_day);
+                //console.log("original day: " + original_day);
                 var edit_event_text = $("#edit_text").val();
+                console.log("edited text: " + edit_event_text);
                 var edit_event_time = $("#edit_time").val();
                 var edit_event_date = $("#edit_date").val();
+                var tag_name = $('input[name="edittag"]:checked').val();
+                console.log("tagname: " + tag_name);
                 
-                var data = {"id": id, "token": global_token, "text": edit_event_text, "time": edit_event_time, "date": edit_event_date};
-                console.log("edit data: " + data);
+                var data = {"id": id, "token": global_token, "text": edit_event_text, "time": edit_event_time, "tag": tag_name, "date": edit_event_date};
+
+                //console.log("edit data: " + data);
                 //console.log("DATA:" + data);
 //ended here.  Need to append the "data" string with the token by seeing how it prints out and then pass the whole thing to ajax/php and in php, compare the session_token with passed token
                 //data = data + global_token;
@@ -444,12 +459,6 @@
                             //$("#"+day+" > "+id+" > " + event_text).val(edit_event_text);// change text
                             //$("#"+day+" > "+id+" > " + event_time).val(edit_event_time);// change time
 
-                            //console.log("#"+day+" > "+id);
-                            //console.log("day: " + $("#"+day).val());
-                            //console.log($("#"+day+" > "+id).val());
-                            //$("#"+day+" > "+id).remove();
-
-                            //change day variable to new date and update the text, time, and date of the event in the calendar
                         }
                     }
                 });
