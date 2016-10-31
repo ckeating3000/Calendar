@@ -379,12 +379,13 @@
             function share_event(){
                 console.log("inside share event function");
                 var other_user_event = $("#user_to_share_ev").val();
+                var event_id = $("#event_share_id").val();
                 console.log("other event user: " + other_user_event);
 
                 var go_ahead = confirm("Are you sure you want to share this event with " + other_user_event + "?");
                 if(go_ahead){
                     
-                    var data = {"other_user": other_user_event, "token": global_token};
+                    var data = {"other_user": other_user_event, "event_id": event_id, "token": global_token};
                     
                     $.ajax({
                         'type': "POST",
