@@ -8,8 +8,8 @@
 		exit;
 	}
 
-	$id = $_POST['event_id'];
 	$token = $_POST['token'];
+	$user = htmlentities($_SESSION['Login']);
 	$other_user = htmlentities($_POST['other_user']);
 	
 	//token match check
@@ -32,16 +32,16 @@
 		//if there's a match, then proceed
 		if($match==true){
 			$other_user.=","; //concatenate a comma to make the whole string separated by usernames
-			$edit_event = $mysqli->prepare("update events set other_event_users = CONCAT(other_event_users,?) where event_id=?");
+			$edit_event = $mysqli->prepare("update users set other_users = CONCAT(other_users,?) where username=?");
 			if(!$edit_event){
 				printf("Query Prep Failed: %s\n", $mysqli->error);
 				echo "Content edit problem";
 				exit;
 			}
-			$edit_event->bind_param('ss', $other_user, $id);
+			$edit_event->bind_param('ss', $other_user, $user);
 			$edit_event->execute();
 			$edit_event->close();
-			echo "Event successfully shared";
+			echo "Calendar successfully shared";
 			exit;
 		}
 	}

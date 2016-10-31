@@ -23,32 +23,54 @@
         $get_events->bind_result($times, $events, $id);
 
         $response_array = array();
-        //     "event" => array(
-        //         "id" => $id,
-        //         "time" => $time,
-        //         "event_text" => $event_text
-        //         )
-        // );
-        // echo json_encode($response_array);
-        //links allow users to view the likes and comments of each post as well as post their own
+        
         while($get_events->fetch()){
-            
             array_push($response_array, array(
                 "id" => htmlspecialchars($id),
                 "time" => htmlspecialchars($times),
                 "event_text" => htmlspecialchars($events)
-                ));
-
-
-            // printf("\t<p class='eventdisplay'> %s %s <div class='hide'>%d</div><br> </p>", 
-            //     htmlspecialchars($times),
-            //     htmlspecialchars($events),
-            //     htmlspecialchars($id)
-
-            
+                ));   
         }
-        echo json_encode($response_array);
         $get_events->close();
+        $mysqli->next_result();
+
+        // this query selects all events and looks through the other_event_users string to see if that event is shared with the current user
+        //select `time`, `event_text`, `event_id` from `events` where `date`='2016-10-30' and other_event_users like '%ColinK%' order by `time`;
+        $get_more_events = $mysqli->prepare("select `time`, `event_text`, `event_id`, `other_event_users` from `events` where `date`=? order by `time`");
+        if(!$get_more_events){
+            printf("Query Prep Failed: %s\n", $mysqli->error);
+            exit;
+        }
+        $contain_user = "%"+$user+"%";
+        $get_more_events->bind_param('s', $date);
+        $get_more_events->execute();
+        $get_more_events->bind_result($times2, $events2, $id2, $otherusers);
+        //$all_users = preg_split ('/[\s*,\s*]*,+[\s*,\s*]*/', $otherusers);
+        
+        while($get_more_events->fetch()){
+            //$all_users = explode("," , $otherusers);
+            //if($all_users == $user){
+            if (strpos($otherusers, $user) !== false) {
+                array_push($response_array, array(
+                    "id" => htmlspecialchars($id2),
+                    "time" => htmlspecialchars($times2),
+                    "event_text" => htmlspecialchars($events2)
+                    )); 
+            }
+        }
+        // for ($i=0; $i < sizeof($all_users); $i++) {
+        //     if($all_users[$i] == $user){
+
+        //         array_push($response_array, array(
+        //         "id" => htmlspecialchars($id2[$i]),
+        //         "time" => htmlspecialchars($times2[$i]),
+        //         "other_event_text" => htmlspecialchars($events2[$i])
+        //         ));
+        //     }
+        // }
+        
+        echo json_encode($response_array);
+        $get_more_events->close();
         exit;
     } 
 ?> 

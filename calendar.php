@@ -203,14 +203,13 @@
 
                                     // var stuff = '<br> <button id="delete'+jsondata[i].id+'" onclick="event_delete('+jsondata[i].id+','+daySend+')">Delete</button><button id="edit'+jsondata[i].id+'" onclick="edit_dialog('+jsondata[i].id+','+daySend+','+jsondata[i].event_text+','+jsondata[i].time+','+year_month_day+')">Edit</button><br>';
 
-                                    console.log("edit button " + edit_button);
+                                    //console.log("edit button " + edit_button);
                                     document.getElementById(daySend).innerHTML += delete_button;
                                     document.getElementById(daySend).innerHTML += edit_button;
                                     document.getElementById(daySend).innerHTML += share_button;
 
                                     var id = String(jsondata[i].id);
                                 }
-                                console.log("finished creating buttons");
                             }
                         }
                     });
@@ -231,6 +230,7 @@
                     $("#eventAdder").hide();
                     $("#login").show();
                     $("#userAdder").show();
+                    $("#sharecalbutton").hide();
                     firstCalendar();
                     //logged out users shouldn't be able to add events, don't need to logout and need to register
                    }
@@ -287,7 +287,6 @@
                         if(jsondata.result != ""){
                             global_username = jsondata.result;
                             global_token = jsondata.token;
-                            console.log("at login: " + global_token);
                             $("#logoutbutton").show();
                             $("#login").hide();
                             $("#userAdder").hide();
@@ -636,7 +635,7 @@
                     $("#logoutbutton").show();
                     $("#userAdder").hide();
                     $("#eventAdder").show();
-                    $("#sharecalbutton").show();
+                    //$("#sharecalbutton").show();
                 }
                 else{
                     $("#login").show();
