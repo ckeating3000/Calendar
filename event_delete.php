@@ -1,6 +1,7 @@
 <?php
 	session_start();
 	require 'database.php';
+	ini_set("session.cookie_httponly", 1);
 	
 	if(!isset($_SESSION['Login'])){
 		echo "You must log in to delete events";

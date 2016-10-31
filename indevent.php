@@ -3,6 +3,7 @@
     //echo "starting session" ;
     //display events on the date selected
     require 'database.php';
+    ini_set("session.cookie_httponly", 1);
     if(!isset($_SESSION['Login'])){
         echo "You must log in to view events";
         exit;

@@ -1,6 +1,7 @@
 <?php
 //be able to access the database
 require 'database.php';
+ini_set("session.cookie_httponly", 1);
 //get username and password from add_user.html form
 $new_username = $_POST["newname"];
 $new_password = $_POST["newpass"];
