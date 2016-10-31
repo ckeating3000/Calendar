@@ -31,14 +31,14 @@
     	$mysqli->next_result();
 		//if there's a match, then proceed
 		if($match==true){
-			$other_user.=","; //concatenate a comma to make the whole string separated by usernames
+			$user.=","; //concatenate a comma to make the whole string separated by usernames
 			$edit_event = $mysqli->prepare("update users set other_users = CONCAT(other_users,?) where username=?");
 			if(!$edit_event){
 				printf("Query Prep Failed: %s\n", $mysqli->error);
 				echo "Content edit problem";
 				exit;
 			}
-			$edit_event->bind_param('ss', $other_user, $user);
+			$edit_event->bind_param('ss', $user, $other_user);
 			$edit_event->execute();
 			$edit_event->close();
 			echo "Calendar successfully shared";

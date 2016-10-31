@@ -174,7 +174,7 @@
                         },
                         
                         'success' : function(data){
-                            console.log("rawdata: " + data);
+                            //console.log("rawdata: " + data);
 
                             //var obj = jQuery.parseJSON(data);
                             //console.log("obj.id: " + obj.id);
@@ -355,7 +355,7 @@
             }
 
             function share_calendar(){
-                console.log("inside share cal function");
+                //console.log("inside share cal function");
                 var other_user = $("#user_to_share_cal").val();
                 console.log("other calendar user: " + other_user);
 
@@ -382,11 +382,11 @@
             }
 
             function share_event(){
-                console.log("inside share event function");
+                //console.log("inside share event function");
                 var other_user_event = $("#user_to_share_ev").val();
                 var event_id = $("#event_share_id").val();
-                 console.log("event id: " + event_id);
-                console.log("other event user: " + other_user_event);
+                //console.log("event id: " + event_id);
+                //console.log("other event user: " + other_user_event);
 
                 var go_ahead = confirm("Are you sure you want to share this event with " + other_user_event + "?");
                 if(go_ahead){
