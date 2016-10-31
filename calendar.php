@@ -155,6 +155,12 @@
                     else{
                         string_day+=String(daySend);
                     }
+                    if(month < 10){
+                        month = ("0"+ String(month));
+                    }
+                    else{
+                        month=String(month);
+                    }
                     //console.log("stirngday:" + string_day);
 
                     var year_month_day = year+"-"+month+"-"+string_day;
@@ -380,6 +386,7 @@
                 console.log("inside share event function");
                 var other_user_event = $("#user_to_share_ev").val();
                 var event_id = $("#event_share_id").val();
+                 console.log("event id: " + event_id);
                 console.log("other event user: " + other_user_event);
 
                 var go_ahead = confirm("Are you sure you want to share this event with " + other_user_event + "?");
