@@ -151,7 +151,7 @@
                 //console.log("global_username: " + global_username)
                 
                 //if so, proceed to ajax query to get events for that day
-                if(global_username!=""){
+                if(global_username!==""){
                     month = Number(month) + 1;
                     var string_day="";
                     //console.log("daysend:" + daySend);
@@ -287,11 +287,11 @@
                         }
                     },
                     'success' : function(data){
-                        var jsondata = JSON.parse(data)
+                        var jsondata = JSON.parse(data);
                         alert(jsondata.message);
                         console.log(jsondata.message);
                         console.log(jsondata.result);
-                        if(jsondata.result != ""){
+                        if(jsondata.result !== ""){
                             global_username = jsondata.result;
                             global_token = jsondata.token;
                             $("#logoutbutton").show();
@@ -567,8 +567,8 @@
                   //  }
                 cal+= '</table>';
                 document.getElementById("calSpot").innerHTML = cal;
-                for(var k=0; k< daysInMonth; k++){
-                    viewEvents(month, k+1, year);
+                for(var h=0; h< daysInMonth; h++){
+                    viewEvents(month, h+1, year);
                     //var id = k+1;
                     //$("#"+id).click(function(event){ //
                     //    
@@ -627,9 +627,9 @@
                 //}
                 cal+= '</table>';
                 document.getElementById("calSpot").innerHTML = cal;
-                for(var k=0; k < daysInMonth; k++){
-                    viewEvents(month, k+1, year);
-                    var id = k+1;
+                for(var h=0; h < daysInMonth; h++){
+                    viewEvents(month, h+1, year);
+                    var id = h+1;
                     //$("#delete"+id).on("click", $("#eventDeleter").dialog('open'));
                 }
                 //$("td").on('click', viewEvents(month, $(this.target).val(), year));
@@ -639,7 +639,7 @@
             function start() {
                 //check for login and display appropriate buttons
                 
-                if(global_username != ""){
+                if(global_username !== ""){
                     $("#login").hide();
                     $("#logoutbutton").show();
                     $("#userAdder").hide();
