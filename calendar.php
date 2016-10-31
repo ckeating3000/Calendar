@@ -89,7 +89,7 @@
         <div id="shareCalendar" title="Share Calendar">
             <p>Share with another user</p> 
             <form class="form" name="share" id="shareCal" action="#" method="POST">
-                <label for="user">Enter user to share your events with</label>
+                <label for="user_to_share_cal">Enter user to share your events with</label>
                 <input type="text" id="user_to_share_cal" name="other_cal_user"/> <br>
                 <input type=submit name="submit" value="submit" id="share_cal_submit"/>
             </form>
@@ -99,7 +99,7 @@
             <p>Share with another user</p> 
             <form class="form" name="share" id="shareEv" action="#" method="POST">
                 <input type="hidden" id="event_share_id" />
-                <label for="user">Enter user to share your event with</label>
+                <label for="user_to_share_ev">Enter user to share your event with</label>
                 <input type="text" id="user_to_share_ev" name="other_ev_user"/> <br>
                 <input type=submit name="submit" value="submit" id="share_ev_submit"/>
             </form>
